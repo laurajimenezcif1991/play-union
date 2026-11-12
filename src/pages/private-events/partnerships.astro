@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { partnerships } from '../../data/parties';
+---
+
+<BaseLayout
+  title="Partnerships & Community Collaborations"
+  description="Instructors and organizations: inquire about partnerships and community collaborations with Play Union in Somerville."
+  currentPath="/private-events/partnerships/"
+>
+  <section class="section">
+    <div class="wrap section-head">
+      <h1>Partnerships & Community Collaborations</h1>
+      <p class="lede">{partnerships.summary}</p>
+    </div>
+    <div class="wrap info-panel">
+      <div class="flag-block">
+        <p><span class="flag">OWNER CONFIRMATION NEEDED</span></p>
+        <p>
+          No confirmed public partnership packages are published on the current site. Share your idea
+          through the partnership inquiry form — this is not a birthday-party booking path.
+        </p>
+      </div>
+      <p>
+        Whether you’re an instructor, nonprofit, or local organization, we’d love to hear how we
+        might collaborate around imaginative play, creativity, and community.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-blue" href="/contact/?reason=partnership">{partnerships.ctaLabel}</a>
+        <a class="btn btn-outline" href="/classes-events/">View Classes & Events</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

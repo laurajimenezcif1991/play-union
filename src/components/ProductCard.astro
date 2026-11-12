@@ -1,0 +1,37 @@
+---
+import type { Product } from '../data/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+---
+
+<article class="product-card">
+  <h3>{product.name}</h3>
+  <p class="price">{product.priceLabel}</p>
+  {product.note ? <p class="note">{product.note}</p> : null}
+  {
+    product.benefits?.length ? (
+      <ul>
+        {product.benefits.map((b) => (
+          <li>{b}</li>
+        ))}
+      </ul>
+    ) : null
+  }
+  {
+    product.purchaseUrl ? (
+      <a class="btn btn-secondary" href={product.purchaseUrl} target="_blank" rel="noopener noreferrer">
+        {product.category === 'craft'
+          ? 'Purchase'
+          : product.category === 'membership'
+            ? 'Buy membership'
+            : 'Buy a Pass'}
+      </a>
+    ) : (
+      <a class="btn btn-outline" href="/contact/?reason=pass-or-membership">Contact Us</a>
+    )
+  }
+</article>

@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="About"
+  description="Meet Play Union — a community-focused indoor pretend-play and craft space in Somerville founded by Debbie Musnikow."
+  currentPath="/about/"
+>
+  <section class="section">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>About Play Union</h1>
+        <p class="lede">
+          Play Union is a drop-in pretend play and craft center — a place for kids to explore,
+          imagine, create, and most of all play. Meet friends, make new ones, and be part of the
+          community. {site.tagline}
+        </p>
+      </div>
+      <div class="hero-media">
+        <img
+          src="/images/space-classic.jpg"
+          alt="Inside Play Union, an indoor pretend-play space in Somerville"
+          width="960"
+          height="740"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split-2">
+      <div class="info-panel prose">
+        <h2>Our approach</h2>
+        <p>
+          We believe young children learn through imaginative play and hands-on creativity. Our
+          space invites building, pretend, music, storytelling, and making — with caregivers nearby
+          and community at the center.
+        </p>
+        <p>
+          Adults are free. Complimentary coffee, tea, and Wi-Fi help caregivers settle in while kids
+          play.
+        </p>
+      </div>
+      <div class="info-panel prose">
+        <h2>Debbie Musnikow, Owner</h2>
+        <p>
+          As a Somerville resident, Debbie cares deeply about the local community. She feels it’s
+          important for children and their caretakers to have space in the community to create,
+          imagine, and explore — and is excited to bring that space to Union Square.
+        </p>
+        <p>
+          Debbie loves working with children of all ages. She taught Hebrew to elementary school
+          children with special needs at Congregation Kehillath Israel; served as Unit Head, then
+          Education Director at Camp Young Judaea Sprout Lake; and advised teenagers at New England
+          Young Judaea’s after-school programs. She gained retail and operations experience as a
+          Store Manager and Management Trainer for Discovery Channel Stores, and spent a decade as
+          Operations Director at Stellabella Toys.
+        </p>
+        <p>
+          In her free time, Debbie enjoys knitting, crafting, and spending time with family and
+          friends.
+        </p>
+        <div class="flag-block">
+          <p><span class="flag">OWNER CONFIRMATION NEEDED</span></p>
+          <p>
+            Add a confirmed owner/staff photo when available. Placeholder portraits are not used.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap info-panel">
+      <h2>Find us</h2>
+      <p>{site.address.full}</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/visit/">Plan Your Visit</a>
+        <a class="btn btn-outline" href="/contact/">Contact Us</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

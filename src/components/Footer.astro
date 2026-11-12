@@ -1,0 +1,41 @@
+---
+import { site } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <h2 style="color:white;font-size:1.35rem;">Play Union</h2>
+      <p>{site.tagline}</p>
+      <p>
+        Indoor play space in Somerville for toddler activities, open play, classes, and children’s
+        birthday parties in Somerville.
+      </p>
+    </div>
+    <div>
+      <h3 style="color:white;">Visit</h3>
+      <p>
+        {site.address.line1}<br />
+        {site.address.city}, {site.address.state} {site.address.zip}
+      </p>
+      <p>
+        <a href={site.phoneHref}>{site.phone}</a><br />
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+    </div>
+    <div>
+      <h3 style="color:white;">Quick links</h3>
+      <p><a href="/visit/">Visit & Open Play</a></p>
+      <p><a href="/passes/">Buy a Pass</a></p>
+      <p><a href="/classes-events/">View Classes & Events</a></p>
+      <p><a href="/private-events/birthday-parties/">Ask About a Party</a></p>
+      <p><a href="/contact/">Contact Us</a></p>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <p>
+      © {new Date().getFullYear()} Play Union ·
+      <a href={site.instagram} rel="noopener noreferrer" target="_blank">Instagram</a>
+    </p>
+  </div>
+</footer>

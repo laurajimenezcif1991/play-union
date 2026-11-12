@@ -1,0 +1,84 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  defaultReason?: string;
+}
+
+const reasons = [
+  { value: 'general-question', label: 'General question' },
+  { value: 'open-play', label: 'Open play' },
+  { value: 'pass-or-membership', label: 'Pass or membership' },
+  { value: 'class-or-event', label: 'Class or event' },
+  { value: 'birthday-party', label: 'Birthday party' },
+  { value: 'other-rental', label: 'Other rental' },
+  { value: 'partnership', label: 'Partnership' },
+];
+
+const { defaultReason = 'general-question' } = Astro.props;
+const selected =
+  reasons.find((r) => r.value === defaultReason)?.value ?? 'general-question';
+---
+
+<form class="contact-form" id="contact-form" novalidate>
+  <label>
+    Your name
+    <input type="text" name="name" autocomplete="name" required />
+  </label>
+  <label>
+    Email
+    <input type="email" name="email" autocomplete="email" required />
+  </label>
+  <label>
+    Phone <span class="note">(optional)</span>
+    <input type="tel" name="phone" autocomplete="tel" />
+  </label>
+  <label>
+    Reason for contacting us
+    <select name="reason" required>
+      {
+        reasons.map((r) => (
+          <option value={r.value} selected={r.value === selected}>
+            {r.label}
+          </option>
+        ))
+      }
+    </select>
+  </label>
+  <label>
+    Message
+    <textarea name="message" required></textarea>
+  </label>
+  <p class="note">
+    Submitting opens an email to {site.email} with your details. Or call
+    <a href={site.phoneHref}>{site.phone}</a>.
+  </p>
+  <button class="btn btn-primary" type="submit">Send message</button>
+  <p id="form-status" class="note" role="status" aria-live="polite"></p>
+</form>
+
+<script define:vars={{ emailTo: site.email }}>
+  const form = document.getElementById('contact-form');
+  const status = document.getElementById('form-status');
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const name = String(data.get('name') || '').trim();
+    const email = String(data.get('email') || '').trim();
+    const phone = String(data.get('phone') || '').trim();
+    const reason = String(data.get('reason') || '').trim();
+    const message = String(data.get('message') || '').trim();
+    if (!name || !email || !message) {
+      if (status) status.textContent = 'Please fill in name, email, and message.';
+      return;
+    }
+    const subject = encodeURIComponent(`Play Union contact: ${reason}`);
+    const body = encodeURIComponent(
+      `Name: ${name}\nEmail: ${email}\nPhone: ${phone || 'n/a'}\nReason: ${reason}\n\n${message}`,
+    );
+    window.location.href = `mailto:${emailTo}?subject=${subject}&body=${body}`;
+    if (status) {
+      status.textContent = 'Opening your email app… If nothing opens, email us directly.';
+    }
+  });
+</script>

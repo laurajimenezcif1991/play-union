@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { partyFaqDetails, partyOverview, partyPricing } from '../../data/parties';
+---
+
+<BaseLayout
+  title="Kids’ Birthday Parties"
+  description="Host children’s birthday parties in Somerville at Play Union — exclusive indoor play space, published pricing, and clear inquiry path."
+  currentPath="/private-events/birthday-parties/"
+>
+  <section class="section">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>{partyOverview.headline}</h1>
+        <p class="lede">{partyOverview.intro}</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/contact/?reason=birthday-party">Ask About a Party</a>
+          <a class="btn btn-outline" href="/faq/#parties">Party FAQ</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img
+          src="/images/space-2.png"
+          alt="Play Union indoor play space available for children’s birthday parties in Somerville"
+          width="1545"
+          height="2000"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split-2">
+      <div class="info-panel prose">
+        <h2>What’s included</h2>
+        <ul>
+          {partyOverview.includesFromHome.map((item) => <li>{item}</li>)}
+        </ul>
+        <p>{partyOverview.favors}</p>
+        <p class="note">{partyOverview.membershipDiscount}</p>
+      </div>
+      <div class="info-panel prose">
+        <h2>Published pricing</h2>
+        <ul>
+          <li>
+            <strong>{partyPricing.base.label}:</strong> {partyPricing.base.priceLabel}
+            <span class="note"> — {partyPricing.base.note}</span>
+          </li>
+          <li>
+            <strong>{partyPricing.deposit.label}:</strong> {partyPricing.deposit.priceLabel}
+          </li>
+          <li>
+            <strong>{partyPricing.addlChild.label}:</strong> {partyPricing.addlChild.priceLabel}
+            <span class="note"> — {partyPricing.addlChild.faqDetail}</span>
+          </li>
+          <li>
+            <strong>{partyPricing.addlTime.label}:</strong> {partyPricing.addlTime.priceLabel}
+          </li>
+          <li>
+            <strong>{partyPricing.crafts.label}:</strong> {partyPricing.crafts.priceLabel}
+          </li>
+        </ul>
+        <div class="flag-block">
+          <p>
+            <span class="flag">OWNER CONFIRMATION NEEDED</span>
+          </p>
+          <p>
+            Party Deposit purchase link is missing on the current site (Purchase points to
+            <code>#</code>). Use Ask About a Party / Contact until a correct purchase URL is
+            provided.
+          </p>
+          <p>
+            Shopify lists a “{partyPricing.shopifyFinalPayment.label}” at{' '}
+            {partyPricing.shopifyFinalPayment.priceLabel}.{' '}
+            {partyPricing.shopifyFinalPayment.note}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split-2">
+      <div class="info-panel prose">
+        <h2>Capacity & guests</h2>
+        <ul>
+          <li>{partyFaqDetails.capacityKids}</li>
+          <li>{partyFaqDetails.capacityPeople}</li>
+          <li>{partyFaqDetails.extraAdults}</li>
+          <li>{partyFaqDetails.finalPayment}</li>
+        </ul>
+      </div>
+      <div class="info-panel prose">
+        <h2>Setup, food & decorations</h2>
+        <div class="flag-block">
+          <p><span class="flag">OWNER CONFIRMATION NEEDED</span></p>
+          <p>{partyFaqDetails.setupCleanupHome}</p>
+          <p>{partyFaqDetails.setupCleanupFaq}</p>
+          <p>These are not published below as a single confirmed policy.</p>
+        </div>
+        <ul>
+          <li>{partyFaqDetails.staffHelp}</li>
+          <li>{partyFaqDetails.spaceNotes}</li>
+          <li>{partyFaqDetails.decorations}</li>
+          <li>{partyFaqDetails.food}</li>
+          <li>{partyFaqDetails.balloons}</li>
+          <li>{partyFaqDetails.favorsDetail}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap info-panel">
+      <h2>How to inquire</h2>
+      <p>
+        Tell us your preferred date, time, child count, and any craft or favor questions. We’ll help
+        you book a children’s birthday party in Somerville at Play Union.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/contact/?reason=birthday-party">Ask About a Party</a>
+        <a class="btn btn-outline" href="/private-events/">All private event options</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

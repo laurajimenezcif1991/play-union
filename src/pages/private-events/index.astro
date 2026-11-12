@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Private Events"
+  description="Book kids’ birthday parties, inquire about other private rentals, or explore partnerships at Play Union in Somerville."
+  currentPath="/private-events/"
+>
+  <section class="section">
+    <div class="wrap section-head">
+      <h1>Private Events</h1>
+      <p class="lede">
+        Play Union offers private bookings for children’s birthday parties in Somerville, plus
+        inquiry paths for other rentals and community collaborations.
+      </p>
+    </div>
+    <div class="wrap card-grid">
+      <article class="action-card">
+        <div class="accent accent-pink"></div>
+        <h2>Kids’ Birthday Parties</h2>
+        <p>Exclusive use of the space, published pricing, add-ons, and party guidelines.</p>
+        <a class="btn btn-primary" href="/private-events/birthday-parties/">Ask About a Party</a>
+      </article>
+      <article class="action-card">
+        <div class="accent accent-green"></div>
+        <h2>Other Private Rentals</h2>
+        <p>Space rental details beyond birthday parties — inquire for current availability.</p>
+        <a class="btn btn-secondary" href="/private-events/other-rentals/">Inquire about a rental</a>
+      </article>
+      <article class="action-card">
+        <div class="accent accent-blue"></div>
+        <h2>Partnerships & Collaborations</h2>
+        <p>Separate path for instructors, organizations, and community partners.</p>
+        <a class="btn btn-blue" href="/private-events/partnerships/">Partnership inquiry</a>
+      </article>
+    </div>
+  </section>
+</BaseLayout>

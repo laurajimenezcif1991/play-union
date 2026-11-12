@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { faqSections } from '../data/faq';
+---
+
+<BaseLayout
+  title="FAQ"
+  description="FAQ for visiting Play Union, passes and memberships, classes and events, and birthday parties in Somerville."
+  currentPath="/faq/"
+>
+  <section class="section">
+    <div class="wrap section-head">
+      <h1>FAQ</h1>
+      <p class="lede">
+        Quick answers aligned with our Visit, Passes, Classes, and Private Events pages. Items that
+        still need owner confirmation are labeled clearly.
+      </p>
+      <div class="cta-row">
+        {
+          faqSections.map((section) => (
+            <a class="btn btn-outline" href={`#${section.id}`}>
+              {section.title}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="wrap faq">
+      {
+        faqSections.map((section) => (
+          <section id={section.id} class="section" style="padding-top:1rem;">
+            <h2>{section.title}</h2>
+            {section.items.map((item) => (
+              <details>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+                {item.ownerConfirmationNeeded ? (
+                  <p>
+                    <span class="flag">OWNER CONFIRMATION NEEDED</span>
+                  </p>
+                ) : null}
+              </details>
+            ))}
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

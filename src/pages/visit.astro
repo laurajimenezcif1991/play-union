@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="Visit & Open Play"
+  description="Plan your open-play visit to Play Union — an indoor play space in Somerville with toddler activities, crafts, amenities, parking, and transit tips."
+  currentPath="/visit/"
+>
+  <section class="section">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Visit & Open Play</h1>
+        <p class="lede">
+          Drop in for pretend play and crafts at Play Union, a welcoming indoor play space in
+          Somerville for young children and their caregivers.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-secondary" href="/passes/">Buy a Pass</a>
+          <a class="btn btn-outline" href="/contact/?reason=open-play">Contact Us</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img
+          src="/images/lets-play.png"
+          alt="Play Union play space ready for open play and toddler activities"
+          width="1545"
+          height="1999"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split-2">
+      <div class="prose info-panel">
+        <h2>What children can do</h2>
+        <p>
+          Build with Magnatiles and blocks, solve a puzzle, take orders in the restaurant, buy
+          groceries at the market, zoom around with trucks, cars, and trains, launch into space, put
+          on a show with puppets or friends, and so much more.
+        </p>
+        <p>
+          Crafting is available for children ages 2+ during drop-in play — including painting wood
+          crafts and a project of the week focused on paper crafts and recycled materials.
+        </p>
+      </div>
+      <div class="prose info-panel">
+        <h2>What caregivers can expect</h2>
+        <ul>
+          {site.amenities.map((item) => <li>{item}</li>)}
+          <li>A community-focused space to meet friends and make new ones</li>
+          <li>{site.finalEntryNote}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split-2">
+      <div class="info-panel">
+        <h2>Hours</h2>
+        <table class="hours-table">
+          <tbody>
+            {
+              site.hours.map((row) => (
+                <tr>
+                  <th scope="row">{row.days}</th>
+                  <td>{row.time}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="note">{site.finalEntryNote}</p>
+      </div>
+      <div class="info-panel prose">
+        <h2>Parking & transportation</h2>
+        <h3>Parking</h3>
+        <ul>
+          {site.parking.map((item) => <li>{item}</li>)}
+        </ul>
+        <h3>Transit</h3>
+        <ul>
+          {site.transit.map((item) => <li>{item}</li>)}
+        </ul>
+        <p>
+          <a href={site.mapLink} target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap info-panel">
+      <h2>How to plan your visit</h2>
+      <ol class="prose">
+        <li>Check hours and plan to arrive before final entry (30 minutes before closing).</li>
+        <li>
+          Choose a <a href="/passes/">pass or membership</a> — or buy a day pass when you visit.
+        </li>
+        <li>Review parking or T options above.</li>
+        <li>
+          See <a href="/classes-events/">Classes & Events</a> if you want to catch a singalong or
+          special program.
+        </li>
+      </ol>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/passes/">Buy a Pass</a>
+        <a class="btn btn-blue" href="/classes-events/">View Classes & Events</a>
+        <a class="btn btn-outline" href="/faq/">Visit FAQ</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

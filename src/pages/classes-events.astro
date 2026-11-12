@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { visibleEvents } from '../data/events';
+
+const list = visibleEvents();
+---
+
+<BaseLayout
+  title="Classes & Events"
+  description="Find toddler activities, singalongs, and special events at Play Union in Somerville. Schedule entries are editable."
+  currentPath="/classes-events/"
+>
+  <section class="section">
+    <div class="wrap section-head">
+      <h1>Classes & Events</h1>
+      <p class="lede">
+        An easy-to-update schedule for classes and special events. Edit entries in
+        <code>src/data/events.ts</code>. Items marked for review are not treated as permanent
+        programming.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/visit/">Plan Your Visit</a>
+        <a class="btn btn-outline" href="/contact/?reason=class-or-event">Contact Us</a>
+      </div>
+    </div>
+
+    <div class="wrap event-list">
+      {
+        list.length === 0 ? (
+          <p class="info-panel">No upcoming classes are listed right now. Please contact us.</p>
+        ) : (
+          list.map((event) => (
+            <article class="event-card">
+              <div class="meta">
+                {event.status === 'needs-review' ? (
+                  <span class="flag">OWNER CONFIRMATION NEEDED</span>
+                ) : (
+                  <span class="flag" style="background:#e8f7e9;border-color:#8fd196;color:#1f6b2a;">
+                    Confirmed
+                  </span>
+                )}
+                {event.recurringNote ? <span>{event.recurringNote}</span> : null}
+              </div>
+              <h2>{event.title}</h2>
+              <div class="meta">
+                <span>
+                  <strong>Date:</strong> {event.date || 'See recurring note / confirm'}
+                </span>
+                <span>
+                  <strong>Time:</strong> {event.time}
+                </span>
+                <span>
+                  <strong>Instructor:</strong> {event.instructor}
+                </span>
+                <span>
+                  <strong>Ages:</strong> {event.ageRange}
+                </span>
+              </div>
+              <p>
+                <strong>Price / pass:</strong> {event.priceOrPass}
+              </p>
+              {event.notes ? <p class="note">{event.notes}</p> : null}
+              <div class="cta-row">
+                {event.registrationUrl ? (
+                  <a
+                    class="btn btn-secondary"
+                    href={event.registrationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Register
+                  </a>
+                ) : (
+                  <a class="btn btn-outline" href="/contact/?reason=class-or-event">
+                    Ask about this event
+                  </a>
+                )}
+              </div>
+            </article>
+          ))
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

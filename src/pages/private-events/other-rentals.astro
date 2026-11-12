@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { otherRentals } from '../../data/parties';
+---
+
+<BaseLayout
+  title="Other Private Rentals"
+  description="Inquire about private space rentals at Play Union in Somerville beyond birthday parties."
+  currentPath="/private-events/other-rentals/"
+>
+  <section class="section">
+    <div class="wrap section-head">
+      <h1>Other Private Rentals</h1>
+      <p class="lede">{otherRentals.summary}</p>
+    </div>
+    <div class="wrap info-panel">
+      <div class="flag-block">
+        <p><span class="flag">OWNER CONFIRMATION NEEDED</span></p>
+        <p>
+          Detailed pricing and terms for non-birthday private rentals are not published as confirmed
+          on the current site. This page stays inquiry-only until Play Union confirms details.
+        </p>
+      </div>
+      <p>
+        For details on other types of space rental, contact Play Union. This is separate from kids’
+        birthday party bookings.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/contact/?reason=other-rental">{otherRentals.ctaLabel}</a>
+        <a class="btn btn-outline" href="/private-events/birthday-parties/">Birthday parties</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
