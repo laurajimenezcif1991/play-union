@@ -1,4 +1,5 @@
 ---
+import { asset } from '../lib/asset';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
 ---
@@ -20,7 +21,7 @@ import { site } from '../data/site';
       </div>
       <div class="hero-media">
         <img
-          src="/images/space-classic.jpg"
+          src={asset("/images/space-classic.jpg")}
           alt="Inside Play Union, an indoor pretend-play space in Somerville"
           width="960"
           height="740"
@@ -77,8 +78,8 @@ import { site } from '../data/site';
       <h2>Find us</h2>
       <p>{site.address.full}</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="/visit/">Plan Your Visit</a>
-        <a class="btn btn-outline" href="/contact/">Contact Us</a>
+        <a class="btn btn-primary" href={asset("/visit/")}>Plan Your Visit</a>
+        <a class="btn btn-outline" href={asset("/contact/")}>Contact Us</a>
       </div>
     </div>
   </section>

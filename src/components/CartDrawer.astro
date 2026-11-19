@@ -1,0 +1,209 @@
+---
+/**
+ * Simulated Shopify cart drawer (Buy SDK / Storefront API preview).
+ * No live Shopify API — localStorage only, for owner walkthroughs.
+ * Demo labeling lives only in the top banner.
+ */
+import Icon from './Icon.astro';
+---
+
+<div class="demo-banner" role="status">
+  <span>Demo</span>
+  Checkout is simulated until Shopify is connected.
+</div>
+
+<div class="cart-backdrop" id="cart-backdrop" hidden></div>
+
+<aside
+  class="cart-drawer"
+  id="cart-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="cart-drawer-title"
+  hidden
+>
+  <div class="cart-drawer-header">
+    <h2 id="cart-drawer-title">Your cart</h2>
+    <button type="button" class="cart-close" id="cart-close" aria-label="Close cart">
+      <Icon name="x" size={22} />
+    </button>
+  </div>
+
+  <div class="cart-drawer-body">
+    <p class="cart-empty note" id="cart-empty">Your cart is empty.</p>
+    <ul class="cart-lines" id="cart-lines"></ul>
+  </div>
+
+  <div class="cart-drawer-footer">
+    <div class="cart-total-row">
+      <span>Subtotal</span>
+      <strong id="cart-subtotal">$0</strong>
+    </div>
+    <button type="button" class="btn btn-primary" id="cart-checkout" disabled>Checkout</button>
+    <button type="button" class="btn btn-outline" id="cart-clear">Clear cart</button>
+  </div>
+</aside>
+
+<div class="checkout-modal" id="checkout-modal" hidden>
+  <div class="checkout-modal-card" role="alertdialog" aria-labelledby="checkout-modal-title">
+    <h2 id="checkout-modal-title">Checkout</h2>
+    <p>
+      With Shopify connected, this would open secure checkout with these items already in the cart.
+    </p>
+    <div class="cta-row">
+      <button type="button" class="btn btn-primary" id="checkout-modal-close">Got it</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'pu-demo-cart-v1';
+
+  function readCart() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeCart(items) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    window.dispatchEvent(new CustomEvent('pu:cart:change', { detail: { items } }));
+  }
+
+  function money(n) {
+    return `$${n.toFixed(0)}`;
+  }
+
+  function render() {
+    const items = readCart();
+    const countEl = document.getElementById('cart-count');
+    const linesEl = document.getElementById('cart-lines');
+    const emptyEl = document.getElementById('cart-empty');
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const checkoutBtn = document.getElementById('cart-checkout');
+
+    const qty = items.reduce((sum, item) => sum + (item.qty || 1), 0);
+    const subtotal = items.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
+
+    if (countEl) countEl.textContent = String(qty);
+    if (subtotalEl) subtotalEl.textContent = money(subtotal);
+    if (checkoutBtn) checkoutBtn.disabled = qty === 0;
+
+    if (!linesEl || !emptyEl) return;
+    linesEl.innerHTML = '';
+    emptyEl.hidden = qty > 0;
+
+    for (const item of items) {
+      const li = document.createElement('li');
+      li.className = 'cart-line';
+      li.innerHTML = `
+        <div>
+          <strong>${item.name}</strong>
+        </div>
+        <div class="cart-line-aside">
+          <span>${money(item.price * (item.qty || 1))}</span>
+          <button type="button" class="cart-remove" data-id="${item.lineId}">Remove</button>
+        </div>
+      `;
+      linesEl.appendChild(li);
+    }
+  }
+
+  function openCart() {
+    const drawer = document.getElementById('cart-drawer');
+    const backdrop = document.getElementById('cart-backdrop');
+    const fab = document.getElementById('cart-fab');
+    if (!drawer || !backdrop || !fab) return;
+    drawer.hidden = false;
+    backdrop.hidden = false;
+    requestAnimationFrame(() => {
+      drawer.classList.add('open');
+      backdrop.classList.add('open');
+    });
+    fab.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('cart-open');
+  }
+
+  function closeCart() {
+    const drawer = document.getElementById('cart-drawer');
+    const backdrop = document.getElementById('cart-backdrop');
+    const fab = document.getElementById('cart-fab');
+    if (!drawer || !backdrop || !fab) return;
+    drawer.classList.remove('open');
+    backdrop.classList.remove('open');
+    fab.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('cart-open');
+    window.setTimeout(() => {
+      drawer.hidden = true;
+      backdrop.hidden = true;
+    }, 220);
+  }
+
+  function addItems(lines) {
+    const cart = readCart();
+    for (const line of lines) {
+      cart.push({
+        lineId: `${line.id}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        id: line.id,
+        name: line.name,
+        price: line.price,
+        qty: 1,
+        purchaseUrl: line.purchaseUrl || null,
+      });
+    }
+    writeCart(cart);
+    render();
+    openCart();
+  }
+
+  function bindCartUi() {
+    document.getElementById('cart-fab')?.addEventListener('click', openCart);
+    document.getElementById('cart-close')?.addEventListener('click', closeCart);
+    document.getElementById('cart-backdrop')?.addEventListener('click', closeCart);
+    document.getElementById('cart-clear')?.addEventListener('click', () => {
+      writeCart([]);
+      render();
+    });
+    document.getElementById('cart-lines')?.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const id = target.getAttribute('data-id');
+      if (!id || !target.classList.contains('cart-remove')) return;
+      writeCart(readCart().filter((item) => item.lineId !== id));
+      render();
+    });
+    document.getElementById('cart-checkout')?.addEventListener('click', () => {
+      const modal = document.getElementById('checkout-modal');
+      if (modal) modal.hidden = false;
+    });
+    document.getElementById('checkout-modal-close')?.addEventListener('click', () => {
+      const modal = document.getElementById('checkout-modal');
+      if (modal) modal.hidden = true;
+    });
+    render();
+  }
+
+  window.addEventListener('pu:cart:add', (event) => {
+    const detail = event.detail;
+    if (!detail?.lines?.length) return;
+    addItems(detail.lines);
+  });
+  window.addEventListener('pu:cart:open', openCart);
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeCart();
+      const modal = document.getElementById('checkout-modal');
+      if (modal) modal.hidden = true;
+    }
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindCartUi);
+  } else {
+    bindCartUi();
+  }
+</script>

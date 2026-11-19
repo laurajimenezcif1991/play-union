@@ -1,4 +1,5 @@
 ---
+import { asset } from '../lib/asset';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { site } from '../data/site';
@@ -12,61 +13,63 @@ const reason = Astro.url.searchParams.get('reason') ?? 'general-question';
   currentPath="/contact/"
 >
   <section class="section">
-    <div class="wrap section-head">
-      <h1>Contact</h1>
-      <p class="lede">
-        Questions about open play, passes, classes, children’s birthday parties in Somerville, or
-        partnerships? Reach out — one form, choose your reason.
-      </p>
-    </div>
+    <div class="wrap split split-2 contact-layout">
+      <div class="contact-details">
+        <div class="section-head">
+          <h1>Contact</h1>
+          <p class="lede">
+            Questions about open play, passes, classes, children’s birthday parties in Somerville, or
+            partnerships? Reach out — one form, choose your reason.
+          </p>
+        </div>
 
-    <div class="wrap split split-2">
-      <div class="info-panel prose">
-        <h2>Play Union</h2>
-        <p>
-          <strong>Address</strong><br />
-          {site.address.line1}<br />
-          {site.address.city}, {site.address.state} {site.address.zip}
-        </p>
-        <p>
-          <strong>Phone</strong><br />
-          <a href={site.phoneHref}>{site.phone}</a>
-        </p>
-        <p>
-          <strong>Email</strong><br />
-          <a href={`mailto:${site.email}`}>{site.email}</a>
-        </p>
-        <h3>Hours</h3>
-        <table class="hours-table">
-          <tbody>
-            {
-              site.hours.map((row) => (
-                <tr>
-                  <th scope="row">{row.days}</th>
-                  <td>{row.time}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-        <h3>Getting here</h3>
-        <ul>
-          {site.parking.map((item) => <li>{item}</li>)}
-          {site.transit.map((item) => <li>{item}</li>)}
-        </ul>
-        <iframe
-          class="map-frame"
-          title="Map of Play Union at 378 Somerville Ave, Somerville, MA"
-          src={site.mapEmbedUrl}
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-        ></iframe>
-        <p>
-          <a href={site.mapLink} target="_blank" rel="noopener noreferrer">Open larger map</a>
-        </p>
+        <div class="info-panel prose">
+          <h2>Play Union</h2>
+          <p>
+            <strong>Address</strong><br />
+            {site.address.line1}<br />
+            {site.address.city}, {site.address.state} {site.address.zip}
+          </p>
+          <p>
+            <strong>Phone</strong><br />
+            <a href={site.phoneHref}>{site.phone}</a>
+          </p>
+          <p>
+            <strong>Email</strong><br />
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          </p>
+          <h3>Hours</h3>
+          <table class="hours-table">
+            <tbody>
+              {
+                site.hours.map((row) => (
+                  <tr>
+                    <th scope="row">{row.days}</th>
+                    <td>{row.time}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+          <h3>Getting here</h3>
+          <ul>
+            {site.parking.map((item) => <li>{item}</li>)}
+            {site.transit.map((item) => <li>{item}</li>)}
+          </ul>
+          <iframe
+            class="map-frame"
+            title="Map of Play Union at 378 Somerville Ave, Somerville, MA"
+            src={site.mapEmbedUrl}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+          <p>
+            <a href={site.mapLink} target="_blank" rel="noopener noreferrer">Open larger map</a>
+          </p>
+        </div>
       </div>
 
-      <div>
+      <div class="contact-form-col">
         <h2>Send a message</h2>
         <ContactForm defaultReason={reason} />
       </div>

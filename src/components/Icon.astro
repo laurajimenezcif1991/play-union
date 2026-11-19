@@ -1,0 +1,63 @@
+---
+/**
+ * Thin wrapper around Tabler Icons (outline).
+ * Source: https://github.com/tabler/tabler-icons (MIT)
+ * Local copies live in src/icons for reliable Vite imports.
+ */
+import shoppingCart from '../icons/shopping-cart.svg?raw';
+import x from '../icons/x.svg?raw';
+import ticket from '../icons/ticket.svg?raw';
+import rubberStamp from '../icons/rubber-stamp.svg?raw';
+import layersIntersect from '../icons/layers-intersect.svg?raw';
+import star from '../icons/star.svg?raw';
+import check from '../icons/check.svg?raw';
+import calendarEvent from '../icons/calendar-event.svg?raw';
+import cake from '../icons/cake.svg?raw';
+import babyCarriage from '../icons/baby-carriage.svg?raw';
+import menu2 from '../icons/menu-2.svg?raw';
+import mapPin from '../icons/map-pin.svg?raw';
+import buildingStore from '../icons/building-store.svg?raw';
+import clock from '../icons/clock.svg?raw';
+import chevronLeft from '../icons/chevron-left.svg?raw';
+import chevronRight from '../icons/chevron-right.svg?raw';
+
+const icons = {
+  'shopping-cart': shoppingCart,
+  x,
+  ticket,
+  'rubber-stamp': rubberStamp,
+  'layers-intersect': layersIntersect,
+  star,
+  check,
+  'calendar-event': calendarEvent,
+  cake,
+  'baby-carriage': babyCarriage,
+  'menu-2': menu2,
+  'map-pin': mapPin,
+  'building-store': buildingStore,
+  clock,
+  'chevron-left': chevronLeft,
+  'chevron-right': chevronRight,
+} as const;
+
+export type IconName = keyof typeof icons;
+
+interface Props {
+  name: IconName;
+  size?: number | string;
+  class?: string;
+  label?: string;
+}
+
+const { name, size = 24, class: className = '', label } = Astro.props;
+const raw = icons[name];
+const sized = raw
+  .replace(/\swidth="[^"]*"/, ` width="${size}"`)
+  .replace(/\sheight="[^"]*"/, ` height="${size}"`)
+  .replace(
+    '<svg',
+    `<svg class="pu-icon ${className}" aria-hidden="${label ? 'false' : 'true'}"${label ? ` role="img" aria-label="${label}"` : ''}`,
+  );
+---
+
+<Fragment set:html={sized} />

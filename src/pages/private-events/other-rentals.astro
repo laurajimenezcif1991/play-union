@@ -1,4 +1,5 @@
 ---
+import { asset } from '../../lib/asset';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { otherRentals } from '../../data/parties';
 ---
@@ -26,8 +27,8 @@ import { otherRentals } from '../../data/parties';
         birthday party bookings.
       </p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="/contact/?reason=other-rental">{otherRentals.ctaLabel}</a>
-        <a class="btn btn-outline" href="/private-events/birthday-parties/">Birthday parties</a>
+        <a class="btn btn-primary" href={asset("/contact/?reason=other-rental")}>{otherRentals.ctaLabel}</a>
+        <a class="btn btn-outline" href={asset("/private-events/birthday-parties/")}>Birthday parties</a>
       </div>
     </div>
   </section>

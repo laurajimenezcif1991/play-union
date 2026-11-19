@@ -1,22 +1,26 @@
 ---
 import { nav, site } from '../data/site';
+import Icon from './Icon.astro';
+import { asset, normalizePath } from '../lib/asset';
 
 interface Props {
   currentPath: string;
 }
 
 const { currentPath } = Astro.props;
+const path = normalizePath(currentPath);
 
-function isActive(href: string) {
-  if (href === '/') return currentPath === '/' || currentPath === '';
-  return currentPath === href || currentPath.startsWith(href);
+function isActive(item: (typeof nav)[number]) {
+  const prefix = 'activePrefix' in item && item.activePrefix ? item.activePrefix : item.href;
+  if (prefix === '/') return path === '/' || path === '';
+  return path === prefix || path.startsWith(prefix);
 }
 ---
 
 <header class="site-header">
   <div class="wrap header-inner">
-    <a class="brand" href="/">
-      <img src="/images/logo.png" width="80" height="58" alt="Play Union logo" />
+    <a class="brand" href={asset('/')}>
+      <img src={asset('images/logo.png')} width="112" height="56" alt="Play Union logo" />
       <span class="brand-text">
         <span class="brand-name" aria-label="Play Union">
           <span>P</span><span>l</span><span>a</span><span>y</span><span class="union">Union</span>
@@ -26,7 +30,8 @@ function isActive(href: string) {
     </a>
 
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" id="nav-toggle">
-      Menu
+      <Icon name="menu-2" size={22} />
+      <span>Menu</span>
     </button>
 
     <div class="nav-panel" id="site-nav">
@@ -34,27 +39,30 @@ function isActive(href: string) {
         <ul class="nav-list">
           {
             nav.map((item) => (
-              <li class={'children' in item && item.children ? 'has-submenu' : undefined}>
-                <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+              <li>
+                <a href={asset(item.href)} aria-current={isActive(item) ? 'page' : undefined}>
                   {item.label}
                 </a>
-                {'children' in item && item.children ? (
-                  <ul class="submenu">
-                    {item.children.map((child) => (
-                      <li>
-                        <a href={child.href} aria-current={isActive(child.href) ? 'page' : undefined}>
-                          {child.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
               </li>
             ))
           }
         </ul>
       </nav>
-      <a class="btn btn-primary header-cta" href="/visit/">Plan Your Visit</a>
+      <div class="header-actions">
+        <button
+          type="button"
+          class="header-cart"
+          id="cart-fab"
+          aria-label="Cart"
+          aria-haspopup="dialog"
+          aria-controls="cart-drawer"
+          aria-expanded="false"
+        >
+          <Icon name="shopping-cart" size={24} />
+          <span class="cart-count" id="cart-count" aria-live="polite">0</span>
+        </button>
+        <a class="btn btn-primary header-cta" href={asset('visit/')}>Plan Your Visit</a>
+      </div>
     </div>
   </div>
 </header>

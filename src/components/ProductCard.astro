@@ -21,17 +21,14 @@ const { product } = Astro.props;
       </ul>
     ) : null
   }
-  {
-    product.purchaseUrl ? (
-      <a class="btn btn-secondary" href={product.purchaseUrl} target="_blank" rel="noopener noreferrer">
-        {product.category === 'craft'
-          ? 'Purchase'
-          : product.category === 'membership'
-            ? 'Buy membership'
-            : 'Buy a Pass'}
-      </a>
-    ) : (
-      <a class="btn btn-outline" href="/contact/?reason=pass-or-membership">Contact Us</a>
-    )
-  }
+  <button
+    type="button"
+    class="btn btn-secondary js-add-demo"
+    data-id={product.id}
+    data-name={product.name}
+    data-price={product.price}
+    data-url={product.purchaseUrl ?? ''}
+  >
+    Add to cart (demo)
+  </button>
 </article>

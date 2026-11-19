@@ -1,6 +1,39 @@
 ---
+import { asset } from '../lib/asset';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeHero from '../components/HomeHero.astro';
+import Icon from '../components/Icon.astro';
 import { site } from '../data/site';
+
+const services = [
+  {
+    title: 'Passes & Memberships',
+    body: 'Compare day passes, multi-day punch cards, and memberships.',
+    href: '/passes/',
+    cta: 'Buy a Pass',
+    variant: 'secondary',
+    accent: 'accent-green',
+    icon: 'ticket' as const,
+  },
+  {
+    title: 'Events and classes',
+    body: 'See the monthly calendar for singalongs, classes, and special events.',
+    href: '/classes-events/',
+    cta: 'View calendar',
+    variant: 'outline',
+    accent: 'accent-yellow',
+    icon: 'calendar-event' as const,
+  },
+  {
+    title: 'Private Events',
+    body: 'Kids’ birthday parties, other rentals, and community partnerships.',
+    href: '/private-events/birthday-parties/',
+    cta: 'Ask About a Party',
+    variant: 'blue',
+    accent: 'accent-blue',
+    icon: 'cake' as const,
+  },
+];
 ---
 
 <BaseLayout
@@ -8,32 +41,7 @@ import { site } from '../data/site';
   description="Play Union is a welcoming indoor pretend-play and craft space in Somerville for young children and caregivers. Play • Learn • Grow."
   currentPath="/"
 >
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <p class="note" style="font-weight:800;color:var(--pink-deep);margin-bottom:0.35rem;">
-          Indoor play space in Somerville
-        </p>
-        <h1>Play Union</h1>
-        <p class="lede">
-          A welcoming place where young children explore, imagine, create, and play — and families
-          connect. {site.tagline}
-        </p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="/visit/">Plan Your Visit</a>
-          <a class="btn btn-outline" href="/passes/">Buy a Pass</a>
-        </div>
-      </div>
-      <div class="hero-media">
-        <img
-          src="/images/space-recent.png"
-          alt="Children and caregivers playing together inside Play Union in Somerville"
-          width="1536"
-          height="1024"
-        />
-      </div>
-    </div>
-  </section>
+  <HomeHero />
 
   <section class="section">
     <div class="wrap">
@@ -45,30 +53,20 @@ import { site } from '../data/site';
         </p>
       </div>
       <div class="card-grid">
-        <article class="action-card">
-          <div class="accent accent-pink"></div>
-          <h3>Open Play</h3>
-          <p>Pretend play, crafts, and community time for young children and caregivers.</p>
-          <a class="btn btn-primary" href="/visit/">Plan Your Visit</a>
-        </article>
-        <article class="action-card">
-          <div class="accent accent-green"></div>
-          <h3>Passes & Memberships</h3>
-          <p>Compare day passes, multi-day punch cards, and memberships.</p>
-          <a class="btn btn-secondary" href="/passes/">Buy a Pass</a>
-        </article>
-        <article class="action-card">
-          <div class="accent accent-yellow"></div>
-          <h3>Classes & Events</h3>
-          <p>See the editable schedule for singalongs, classes, and special events.</p>
-          <a class="btn btn-outline" href="/classes-events/">View Classes & Events</a>
-        </article>
-        <article class="action-card">
-          <div class="accent accent-blue"></div>
-          <h3>Private Events</h3>
-          <p>Kids’ birthday parties, other rentals, and community partnerships.</p>
-          <a class="btn btn-blue" href="/private-events/birthday-parties/">Ask About a Party</a>
-        </article>
+        {
+          services.map((service) => (
+            <article class="action-card">
+              <div class={`action-icon ${service.accent}`} aria-hidden="true">
+                <Icon name={service.icon} size={26} />
+              </div>
+              <h3>{service.title}</h3>
+              <p>{service.body}</p>
+              <a class={`btn btn-${service.variant}`} href={asset(service.href)}>
+                {service.cta}
+              </a>
+            </article>
+          ))
+        }
       </div>
     </div>
   </section>
@@ -76,7 +74,10 @@ import { site } from '../data/site';
   <section class="section">
     <div class="wrap split split-2">
       <div class="info-panel">
-        <h2>Location & hours</h2>
+        <h2>
+          <span class="inline-icon" aria-hidden="true"><Icon name="map-pin" size={22} /></span>
+          Location &amp; hours
+        </h2>
         <p>
           <strong>{site.address.full}</strong>
         </p>
@@ -94,13 +95,13 @@ import { site } from '../data/site';
         </table>
         <p class="note">{site.finalEntryNote}</p>
         <div class="cta-row">
-          <a class="btn btn-outline" href="/visit/">Full visit details</a>
-          <a class="btn btn-primary" href="/contact/">Contact Us</a>
+          <a class="btn btn-outline" href={asset("/visit/")}>Full visit details</a>
+          <a class="btn btn-primary" href={asset("/contact/")}>Contact Us</a>
         </div>
       </div>
       <div class="hero-media">
         <img
-          src="/images/space-play.jpg"
+          src={asset("/images/space-play.jpg")}
           alt="Play areas and toys inside Play Union’s indoor play space"
           width="1200"
           height="1600"

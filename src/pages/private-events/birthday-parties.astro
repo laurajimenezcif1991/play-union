@@ -1,5 +1,7 @@
 ---
+import { asset } from '../../lib/asset';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { partyFaqDetails, partyOverview, partyPricing } from '../../data/parties';
 ---
 
@@ -8,26 +10,22 @@ import { partyFaqDetails, partyOverview, partyPricing } from '../../data/parties
   description="Host children’s birthday parties in Somerville at Play Union — exclusive indoor play space, published pricing, and clear inquiry path."
   currentPath="/private-events/birthday-parties/"
 >
-  <section class="section">
-    <div class="wrap hero-grid">
-      <div>
-        <h1>{partyOverview.headline}</h1>
-        <p class="lede">{partyOverview.intro}</p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="/contact/?reason=birthday-party">Ask About a Party</a>
-          <a class="btn btn-outline" href="/faq/#parties">Party FAQ</a>
-        </div>
-      </div>
-      <div class="hero-media">
-        <img
-          src="/images/space-2.png"
-          alt="Play Union indoor play space available for children’s birthday parties in Somerville"
-          width="1545"
-          height="2000"
-        />
-      </div>
-    </div>
-  </section>
+  <PageHero
+    title={partyOverview.headline}
+    kicker="Private celebrations in Somerville"
+    lede={partyOverview.intro}
+    ctas={[
+      { href: '/contact/?reason=birthday-party', label: 'Ask About a Party', variant: 'primary' },
+      { href: '/faq/#parties', label: 'Party FAQ', variant: 'outline' },
+    ]}
+    floats={['bear', 'ball']}
+    slides={[
+      {
+        src: asset('/images/party-room.jpg'),
+        alt: 'Play Union party room set for a birthday, with balloons, a long decorated table, and a cupcake stand',
+      },
+    ]}
+  />
 
   <section class="section">
     <div class="wrap split split-2">
@@ -118,8 +116,9 @@ import { partyFaqDetails, partyOverview, partyPricing } from '../../data/parties
         you book a children’s birthday party in Somerville at Play Union.
       </p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="/contact/?reason=birthday-party">Ask About a Party</a>
-        <a class="btn btn-outline" href="/private-events/">All private event options</a>
+        <a class="btn btn-primary" href={asset("/contact/?reason=birthday-party")}>Ask About a Party</a>
+        <a class="btn btn-outline" href={asset("/private-events/other-rentals/")}>Other private rentals</a>
+        <a class="btn btn-outline" href={asset("/private-events/partnerships/")}>Partnerships</a>
       </div>
     </div>
   </section>

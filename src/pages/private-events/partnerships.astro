@@ -1,4 +1,5 @@
 ---
+import { asset } from '../../lib/asset';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { partnerships } from '../../data/parties';
 ---
@@ -26,8 +27,8 @@ import { partnerships } from '../../data/parties';
         might collaborate around imaginative play, creativity, and community.
       </p>
       <div class="cta-row">
-        <a class="btn btn-blue" href="/contact/?reason=partnership">{partnerships.ctaLabel}</a>
-        <a class="btn btn-outline" href="/classes-events/">View Classes & Events</a>
+        <a class="btn btn-blue" href={asset("/contact/?reason=partnership")}>{partnerships.ctaLabel}</a>
+        <a class="btn btn-outline" href={asset("/classes-events/")}>View Events</a>
       </div>
     </div>
   </section>

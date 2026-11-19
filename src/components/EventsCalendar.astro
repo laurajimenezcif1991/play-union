@@ -1,0 +1,117 @@
+---
+import { calendarForClient } from '../data/events';
+import Icon from './Icon.astro';
+
+const occurrencesJson = JSON.stringify(calendarForClient());
+---
+
+<div class="events-calendar" id="events-calendar" data-occurrences={occurrencesJson}>
+  <div class="events-calendar-toolbar">
+    <p class="events-calendar-month" id="events-calendar-month" aria-live="polite">November 2026</p>
+    <div class="events-calendar-nav">
+      <button type="button" class="events-nav-btn" id="events-prev-month" aria-label="Previous month">
+        <Icon name="chevron-left" size={20} />
+      </button>
+      <button type="button" class="events-nav-btn" id="events-next-month" aria-label="Next month">
+        <Icon name="chevron-right" size={20} />
+      </button>
+    </div>
+  </div>
+
+  <div class="events-calendar-grid" id="events-calendar-list" role="list"></div>
+  <p class="events-calendar-empty note" id="events-calendar-empty" hidden>
+    No events listed for this month yet. Check back soon or contact us.
+  </p>
+</div>
+
+<script>
+  const root = document.getElementById('events-calendar');
+  if (root) {
+    const occurrences = JSON.parse(root.getAttribute('data-occurrences') || '[]');
+    const listEl = document.getElementById('events-calendar-list');
+    const monthEl = document.getElementById('events-calendar-month');
+    const emptyEl = document.getElementById('events-calendar-empty');
+
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    const firstDate = occurrences[0]?.date ? new Date(`${occurrences[0].date}T12:00:00`) : new Date();
+    let viewYear = firstDate.getFullYear();
+    let viewMonth = firstDate.getMonth();
+
+    function clockSvg() {
+      return `<svg xmlns="http://www.w3.org/2000/svg" class="pu-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 7v5l3 3" /></svg>`;
+    }
+
+    function render() {
+      if (!listEl || !monthEl || !emptyEl) return;
+      monthEl.textContent = `${months[viewMonth]} ${viewYear}`;
+
+      const items = occurrences
+        .filter((item) => {
+          const d = new Date(`${item.date}T12:00:00`);
+          return d.getFullYear() === viewYear && d.getMonth() === viewMonth;
+        })
+        .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+
+      listEl.innerHTML = '';
+      emptyEl.hidden = items.length > 0;
+
+      for (const item of items) {
+        const d = new Date(`${item.date}T12:00:00`);
+        const day = String(d.getDate());
+        const mon = shortMonths[d.getMonth()];
+        const card = document.createElement('article');
+        card.className = `events-cal-card tone-${item.tone}`;
+        card.setAttribute('role', 'listitem');
+        card.innerHTML = `
+          <div class="events-cal-date" aria-hidden="true">
+            <span class="events-cal-day">${day}</span>
+            <span class="events-cal-mon">${mon}</span>
+          </div>
+          <div class="events-cal-body">
+            <h3 class="events-cal-title">${item.title}</h3>
+            <p class="events-cal-time">
+              ${clockSvg()}
+              <span>${item.time}</span>
+            </p>
+          </div>
+        `;
+        listEl.appendChild(card);
+      }
+    }
+
+    document.getElementById('events-prev-month')?.addEventListener('click', () => {
+      viewMonth -= 1;
+      if (viewMonth < 0) {
+        viewMonth = 11;
+        viewYear -= 1;
+      }
+      render();
+    });
+
+    document.getElementById('events-next-month')?.addEventListener('click', () => {
+      viewMonth += 1;
+      if (viewMonth > 11) {
+        viewMonth = 0;
+        viewYear += 1;
+      }
+      render();
+    });
+
+    render();
+  }
+</script>

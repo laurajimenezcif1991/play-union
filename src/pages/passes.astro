@@ -1,83 +1,20 @@
 ---
+import { asset } from '../lib/asset';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProductCard from '../components/ProductCard.astro';
-import {
-  crafts,
-  groupProducts,
-  memberships,
-  passes,
-  productNotes,
-} from '../data/products';
-
-const passGroups = groupProducts(passes);
-const membershipGroups = groupProducts(memberships);
+import PassChooser from '../components/PassChooser.astro';
+import PricingCards from '../components/PricingCards.astro';
 ---
 
 <BaseLayout
   title="Passes & Memberships"
-  description="Compare Play Union day passes, multi-day punch cards, and memberships for open play in Somerville."
+  description="Play Union day passes, punch cards, and memberships — clear pricing for families in Somerville."
   currentPath="/passes/"
 >
-  <section class="section">
-    <div class="wrap section-head">
-      <h1>Passes & Memberships</h1>
-      <p class="lede">
-        Compare options side by side. Prices, names, and purchase links match Play Union’s published
-        offerings. Update products in <code>src/data/products.ts</code>.
-      </p>
-      <p class="note">{productNotes.siblingsInfants}</p>
-      <p class="note">{productNotes.multiDayNeverExpire}</p>
+  <section class="section section-tight">
+    <div class="wrap">
+      <PassChooser />
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap">
-      <h2>Passes</h2>
-      {
-        passGroups.map(({ group, items }) => (
-          <div class="product-group">
-            <h3>{group}</h3>
-            <div class="product-grid">
-              {items.map((product) => (
-                <ProductCard product={product} />
-              ))}
-            </div>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <h2>Memberships</h2>
-      <p class="note">{productNotes.membershipBenefits}</p>
-      {
-        membershipGroups.map(({ group, items }) => (
-          <div class="product-group">
-            <h3>{group}</h3>
-            <div class="product-grid">
-              {items.map((product) => (
-                <ProductCard product={product} />
-              ))}
-            </div>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <h2>Crafting add-ons</h2>
-      <p class="note">{productNotes.craftsAge}</p>
-      <div class="product-grid">
-        {crafts.map((product) => <ProductCard product={product} />)}
-      </div>
-      <div class="cta-row">
-        <a class="btn btn-outline" href="/visit/">Plan Your Visit</a>
-        <a class="btn btn-primary" href="/contact/?reason=pass-or-membership">Contact Us</a>
-      </div>
-    </div>
-  </section>
+  <PricingCards />
 </BaseLayout>

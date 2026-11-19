@@ -2,7 +2,10 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+import SiteBackground from '../components/SiteBackground.astro';
 import { site } from '../data/site';
+import { asset } from '../lib/asset';
 
 interface Props {
   title: string;
@@ -10,12 +13,12 @@ interface Props {
   currentPath?: string;
 }
 
-const {
-  title,
-  description = site.description,
-  currentPath = Astro.url.pathname,
-} = Astro.props;
+const { title, description = site.description, currentPath = Astro.url.pathname } = Astro.props;
 const pageTitle = title === site.name ? title : `${title} | ${site.name}`;
+const fontWoff2 = asset('fonts/ArcherPro-Medium.woff2');
+const fontWoff = asset('fonts/ArcherPro-Medium.woff');
+const fontOtf = asset('fonts/ArcherPro-Medium.otf');
+const fontTtf = asset('fonts/ArcherPro-Medium.ttf');
 ---
 
 <!doctype html>
@@ -25,17 +28,32 @@ const pageTitle = title === site.name ? title : `${title} | ${site.name}`;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="icon" type="image/png" href={asset('images/logo.png')} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <style set:html={`
+      @font-face {
+        font-family: 'Archer Pro';
+        src:
+          url('${fontWoff2}') format('woff2'),
+          url('${fontWoff}') format('woff'),
+          url('${fontOtf}') format('opentype'),
+          url('${fontTtf}') format('truetype');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+    `} />
     <title>{pageTitle}</title>
   </head>
   <body>
+    <SiteBackground />
     <a class="skip-link" href="#main">Skip to content</a>
+    <CartDrawer />
     <Header currentPath={currentPath} />
     <main id="main">
       <slot />

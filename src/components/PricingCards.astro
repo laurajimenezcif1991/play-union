@@ -1,0 +1,198 @@
+---
+/**
+ * GiddyKids-style plan cards.
+ * Shown under the guided selection header on Passes & Memberships.
+ */
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+const plans: Array<{
+  id: string;
+  name: string;
+  price: string;
+  priceNote: string;
+  icon: IconName;
+  featured: boolean;
+  badge: string | null;
+  features: string[];
+  cart: { id: string; name: string; price: number; purchaseUrl: string };
+}> = [
+  {
+    id: 'day-pass',
+    name: 'Day Pass',
+    price: '$20',
+    priceNote: 'first child',
+    icon: 'ticket',
+    featured: false,
+    badge: null,
+    features: [
+      'Open play during published hours',
+      'Additional child $10',
+      'Ages 0–1: $10 · siblings 0–1 free',
+    ],
+    cart: {
+      id: 'day-pass',
+      name: 'Day Pass',
+      price: 20,
+      purchaseUrl: 'https://play-union.myshopify.com/products/1-day-pass',
+    },
+  },
+  {
+    id: '5-day-pass',
+    name: '5 Day Pass',
+    price: '$90',
+    priceNote: 'punch card',
+    icon: 'rubber-stamp',
+    featured: true,
+    badge: 'Best value',
+    features: [
+      'Five visits · never expires',
+      'Additional child $45',
+      'Share across visits anytime',
+    ],
+    cart: {
+      id: '5-day-pass',
+      name: '5 Day Pass',
+      price: 90,
+      purchaseUrl: 'https://play-union.myshopify.com/products/5-day-pass',
+    },
+  },
+  {
+    id: '10-day-pass',
+    name: '10 Day Pass',
+    price: '$160',
+    priceNote: 'punch card',
+    icon: 'layers-intersect',
+    featured: false,
+    badge: null,
+    features: [
+      'Ten visits · never expires',
+      'Additional child $80',
+      'Best for regular drop-ins',
+    ],
+    cart: {
+      id: '10-day-pass',
+      name: '10 Day Pass',
+      price: 160,
+      purchaseUrl: 'https://play-union.myshopify.com/products/10-day-pass',
+    },
+  },
+  {
+    id: '1-month',
+    name: '1 Month Membership',
+    price: '$130',
+    priceNote: '/mo',
+    icon: 'star',
+    featured: false,
+    badge: null,
+    features: [
+      'Unlimited open play for the month',
+      '10% off parties · 2 crafts/week (ages 2+)',
+      'Additional child $65',
+    ],
+    cart: {
+      id: '1-month',
+      name: '1 Month Membership',
+      price: 130,
+      purchaseUrl: 'https://play-union.myshopify.com/products/1-month-membership',
+    },
+  },
+];
+---
+
+<section class="pricing-hero" aria-labelledby="plans-heading">
+  <div class="wrap">
+    <div class="pricing-intro">
+      <h2 id="plans-heading">Popular plans</h2>
+      <p>Prefer to browse? Pick a plan below — or use the finder above for a family total.</p>
+    </div>
+
+    <div class="pricing-grid">
+      {
+        plans.map((plan) => (
+          <article class:list={['pricing-card', plan.featured && 'is-featured']}>
+            {plan.badge ? <span class="pricing-badge">{plan.badge}</span> : null}
+            <div class="pricing-icon" aria-hidden="true">
+              <Icon name={plan.icon} size={28} />
+            </div>
+            <h3>{plan.name}</h3>
+            <p class="pricing-price">
+              {plan.price}
+              {plan.priceNote ? <span class="pricing-price-note">{plan.priceNote}</span> : null}
+            </p>
+            <ul class="pricing-features">
+              {plan.features.map((feature) => (
+                <li>
+                  <span class="check" aria-hidden="true">
+                    <Icon name="check" size={16} />
+                  </span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              class="btn pricing-buy js-buy-plan"
+              data-id={plan.cart.id}
+              data-name={plan.cart.name}
+              data-price={plan.cart.price}
+              data-url={plan.cart.purchaseUrl}
+            >
+              Buy &amp; activate
+            </button>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="pricing-more">
+      <p>
+        Longer memberships: <strong>4 Month $440</strong> · <strong>6 Month $600</strong>
+        (additional child half price).
+      </p>
+      <div class="cta-row">
+        <button
+          type="button"
+          class="btn btn-outline js-buy-plan"
+          data-id="4-month"
+          data-name="4 Month Membership"
+          data-price="440"
+          data-url="https://play-union.myshopify.com/products/4-month-membership"
+        >
+          Buy 4 Month
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline js-buy-plan"
+          data-id="6-month"
+          data-name="6 Month Membership"
+          data-price="600"
+          data-url="https://play-union.myshopify.com/products/6-month-membership"
+        >
+          Buy 6 Month
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.js-buy-plan').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      window.dispatchEvent(
+        new CustomEvent('pu:cart:add', {
+          detail: {
+            lines: [
+              {
+                id: btn.getAttribute('data-id'),
+                name: btn.getAttribute('data-name'),
+                price: Number(btn.getAttribute('data-price') || 0),
+                purchaseUrl: btn.getAttribute('data-url') || null,
+              },
+            ],
+          },
+        }),
+      );
+    });
+  });
+</script>

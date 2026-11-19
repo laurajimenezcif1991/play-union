@@ -50,24 +50,26 @@ export const site = {
   ],
 } as const;
 
+/** Primary header nav — short labels for what families want to do next. */
 export const nav = [
   { label: 'Home', href: '/' },
-  { label: 'Visit & Open Play', href: '/visit/' },
-  { label: 'Passes & Memberships', href: '/passes/' },
-  { label: 'Classes & Events', href: '/classes-events/' },
+  { label: 'Visit', href: '/visit/' },
+  { label: 'Passes', href: '/passes/' },
+  { label: 'Events & Classes', href: '/classes-events/' },
   {
-    label: 'Private Events',
-    href: '/private-events/',
-    children: [
-      { label: "Kids' Birthday Parties", href: '/private-events/birthday-parties/' },
-      { label: 'Other Private Rentals', href: '/private-events/other-rentals/' },
-      {
-        label: 'Partnerships & Community Collaborations',
-        href: '/private-events/partnerships/',
-      },
-    ],
+    label: 'Parties',
+    href: '/private-events/birthday-parties/',
+    /** Highlight Parties for all private-event URLs */
+    activePrefix: '/private-events/',
   },
-  { label: 'About', href: '/about/' },
   { label: 'Contact', href: '/contact/' },
+] as const;
+
+/** Secondary links for the footer (About / FAQ / hours live here, not in the header). */
+export const footerNav = [
+  { label: 'About', href: '/about/' },
   { label: 'FAQ', href: '/faq/' },
+  { label: 'Hours', href: '/visit/#hours' },
+  { label: 'Other private rentals', href: '/private-events/other-rentals/' },
+  { label: 'Partnerships', href: '/private-events/partnerships/' },
 ] as const;

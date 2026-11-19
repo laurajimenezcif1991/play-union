@@ -1,5 +1,6 @@
 ---
-import { site } from '../data/site';
+import { footerNav, site } from '../data/site';
+import { asset } from '../lib/asset';
 ---
 
 <footer class="site-footer">
@@ -7,13 +8,6 @@ import { site } from '../data/site';
     <div>
       <h2 style="color:white;font-size:1.35rem;">Play Union</h2>
       <p>{site.tagline}</p>
-      <p>
-        Indoor play space in Somerville for toddler activities, open play, classes, and children’s
-        birthday parties in Somerville.
-      </p>
-    </div>
-    <div>
-      <h3 style="color:white;">Visit</h3>
       <p>
         {site.address.line1}<br />
         {site.address.city}, {site.address.state} {site.address.zip}
@@ -24,18 +18,28 @@ import { site } from '../data/site';
       </p>
     </div>
     <div>
-      <h3 style="color:white;">Quick links</h3>
-      <p><a href="/visit/">Visit & Open Play</a></p>
-      <p><a href="/passes/">Buy a Pass</a></p>
-      <p><a href="/classes-events/">View Classes & Events</a></p>
-      <p><a href="/private-events/birthday-parties/">Ask About a Party</a></p>
-      <p><a href="/contact/">Contact Us</a></p>
+      <h3 style="color:white;">Explore</h3>
+      <p><a href={asset('visit/')}>Visit</a></p>
+      <p><a href={asset('passes/')}>Passes</a></p>
+      <p><a href={asset('classes-events/')}>Events</a></p>
+      <p><a href={asset('private-events/birthday-parties/')}>Parties</a></p>
+      <p><a href={asset('contact/')}>Contact</a></p>
+    </div>
+    <div>
+      <h3 style="color:white;">More info</h3>
+      {
+        footerNav.map((item) => (
+          <p>
+            <a href={asset(item.href)}>{item.label}</a>
+          </p>
+        ))
+      }
+      <p>
+        <a href={site.instagram} rel="noopener noreferrer" target="_blank">Instagram</a>
+      </p>
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <p>
-      © {new Date().getFullYear()} Play Union ·
-      <a href={site.instagram} rel="noopener noreferrer" target="_blank">Instagram</a>
-    </p>
+    <p>© {new Date().getFullYear()} Play Union</p>
   </div>
 </footer>

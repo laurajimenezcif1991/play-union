@@ -1,35 +1,78 @@
 ---
+import { asset } from '../lib/asset';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { visibleEvents } from '../data/events';
+import EventsCalendar from '../components/EventsCalendar.astro';
+import { featuredVideo, visibleEvents } from '../data/events';
 
 const list = visibleEvents();
 ---
 
 <BaseLayout
-  title="Classes & Events"
-  description="Find toddler activities, singalongs, and special events at Play Union in Somerville. Schedule entries are editable."
+  title="Events and classes"
+  description="Find toddler activities, singalongs, and classes at Play Union in Somerville. Browse the monthly calendar schedule."
   currentPath="/classes-events/"
 >
-  <section class="section">
-    <div class="wrap section-head">
-      <h1>Classes & Events</h1>
-      <p class="lede">
-        An easy-to-update schedule for classes and special events. Edit entries in
-        <code>src/data/events.ts</code>. Items marked for review are not treated as permanent
-        programming.
-      </p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="/visit/">Plan Your Visit</a>
-        <a class="btn btn-outline" href="/contact/?reason=class-or-event">Contact Us</a>
+  <section class="section section-tight">
+    <div class="wrap home-hero-inner events-hero">
+      <div class="hero-copy">
+        <h1>Events and classes</h1>
+        <p class="lede">Classes and special events at Play Union.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href={asset("/visit/")}>Plan Your Visit</a>
+          <a class="btn btn-outline" href={asset("/contact/?reason=class-or-event")}>Contact Us</a>
+        </div>
+      </div>
+
+      <div class="hero-stage">
+        {
+          featuredVideo ? (
+            <figure class="hero-frame events-hero-video">
+              {featuredVideo.type === 'file' ? (
+                <video
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  controls
+                  poster={featuredVideo.poster ? asset(featuredVideo.poster) : undefined}
+                  src={asset(featuredVideo.src)}
+                  aria-label={featuredVideo.title}
+                >
+                  Your browser does not support video playback.
+                </video>
+              ) : (
+                <iframe
+                  src={`${featuredVideo.src}${featuredVideo.src.includes('?') ? '&' : '?'}autoplay=1&mute=1`}
+                  title={featuredVideo.title}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                />
+              )}
+            </figure>
+          ) : (
+            <div class="info-panel event-video-help">
+              <h2>Add a video</h2>
+              <p class="note">
+                Set <code>featuredVideo</code> in <code>src/data/events.ts</code> to show a clip here.
+              </p>
+            </div>
+          )
+        }
       </div>
     </div>
+  </section>
 
-    <div class="wrap event-list">
-      {
-        list.length === 0 ? (
-          <p class="info-panel">No upcoming classes are listed right now. Please contact us.</p>
-        ) : (
-          list.map((event) => (
+  <section class="section">
+    <div class="wrap">
+      <EventsCalendar />
+    </div>
+
+    {
+      list.length ? (
+        <div class="wrap event-list" style="margin-top: 2rem;">
+          <h2 class="events-detail-heading">Program notes</h2>
+          {list.map((event) => (
             <article class="event-card">
               <div class="meta">
                 {event.status === 'needs-review' ? (
@@ -41,11 +84,8 @@ const list = visibleEvents();
                 )}
                 {event.recurringNote ? <span>{event.recurringNote}</span> : null}
               </div>
-              <h2>{event.title}</h2>
+              <h3>{event.title}</h3>
               <div class="meta">
-                <span>
-                  <strong>Date:</strong> {event.date || 'See recurring note / confirm'}
-                </span>
                 <span>
                   <strong>Time:</strong> {event.time}
                 </span>
@@ -71,15 +111,15 @@ const list = visibleEvents();
                     Register
                   </a>
                 ) : (
-                  <a class="btn btn-outline" href="/contact/?reason=class-or-event">
+                  <a class="btn btn-outline" href={asset("/contact/?reason=class-or-event")}>
                     Ask about this event
                   </a>
                 )}
               </div>
             </article>
-          ))
-        )
-      }
-    </div>
+          ))}
+        </div>
+      ) : null
+    }
   </section>
 </BaseLayout>

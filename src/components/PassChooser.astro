@@ -1,0 +1,358 @@
+---
+import { catalogForClient } from '../data/catalog';
+
+const catalogJson = JSON.stringify(catalogForClient);
+---
+
+<section class="passes-finder" id="pass-chooser" data-catalog={catalogJson}>
+  <header class="passes-finder-hero">
+    <h1>Passes &amp; Memberships</h1>
+    <p class="passes-lead">Build a pass for your family. Your picks update as you choose.</p>
+  </header>
+
+  <div class="passes-finder-steps" aria-label="Pass finder">
+    <div class="chooser-step is-active" data-step="1">
+      <h2>How often?</h2>
+      <div class="choice-grid choice-grid-compact" role="radiogroup" aria-label="How often will you visit?">
+        <button type="button" class="choice-card" data-frequency="today">
+          <span class="choice-title">Today</span>
+          <span class="choice-desc">Day Pass</span>
+        </button>
+        <button type="button" class="choice-card" data-frequency="multi">
+          <span class="choice-chip">Save up to 20%</span>
+          <span class="choice-title">A few visits</span>
+          <span class="choice-desc">5 or 10 Day card</span>
+        </button>
+        <button type="button" class="choice-card" data-frequency="membership">
+          <span class="choice-chip">Save up to 23%</span>
+          <span class="choice-title">Often</span>
+          <span class="choice-desc">Membership</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="chooser-step" data-step="2" id="step-pack">
+      <h2>Pass length</h2>
+      <div class="choice-grid choice-grid-compact" id="pack-options" role="radiogroup" aria-label="Pass length">
+        <p class="note pack-placeholder">Choose how often first</p>
+      </div>
+    </div>
+
+    <div class="chooser-step" data-step="3" id="step-family">
+      <h2>Who’s coming?</h2>
+      <div class="family-fields">
+        <div class="stepper" data-stepper="infants">
+          <span class="stepper-label" id="label-infants">Ages 0–1</span>
+          <div class="stepper-controls">
+            <button type="button" class="stepper-btn" data-dir="-1" aria-label="Fewer ages 0 to 1">−</button>
+            <input
+              type="number"
+              id="infants"
+              min="0"
+              max="8"
+              value="0"
+              inputmode="numeric"
+              aria-labelledby="label-infants"
+            />
+            <button type="button" class="stepper-btn" data-dir="1" aria-label="More ages 0 to 1">+</button>
+          </div>
+        </div>
+        <div class="stepper" data-stepper="children">
+          <span class="stepper-label" id="label-children">Ages 1+</span>
+          <div class="stepper-controls">
+            <button type="button" class="stepper-btn" data-dir="-1" aria-label="Fewer ages 1 and up">−</button>
+            <input
+              type="number"
+              id="children-one-plus"
+              min="0"
+              max="8"
+              value="1"
+              inputmode="numeric"
+              aria-labelledby="label-children"
+            />
+            <button type="button" class="stepper-btn" data-dir="1" aria-label="More ages 1 and up">+</button>
+          </div>
+        </div>
+      </div>
+      <p class="note passes-context" id="dynamic-note" hidden></p>
+    </div>
+  </div>
+</section>
+
+<div class="passes-sticky-bar" id="passes-sticky-bar" hidden>
+  <div class="wrap passes-sticky-inner">
+    <div class="passes-sticky-total">
+      <span class="passes-sticky-label">Your total</span>
+      <strong id="passes-sticky-amount">$—</strong>
+      <span class="passes-sticky-pack note" id="passes-sticky-pack"></span>
+    </div>
+    <div class="passes-sticky-actions">
+      <button type="button" class="btn btn-outline" id="restart-chooser">Reset</button>
+      <button type="button" class="btn btn-secondary" id="add-pass-to-cart" disabled>Add to cart</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const root = document.getElementById('pass-chooser');
+  if (root) {
+    const catalog = JSON.parse(root.getAttribute('data-catalog') || '{}');
+    const sticky = document.getElementById('passes-sticky-bar');
+    const amountEl = document.getElementById('passes-sticky-amount');
+    const packEl = document.getElementById('passes-sticky-pack');
+    const addBtn = document.getElementById('add-pass-to-cart');
+    const state = {
+      frequency: null,
+      pack: null,
+      childrenOnePlus: 1,
+      infants: 0,
+      quote: null,
+    };
+
+    function packButtonsForFrequency(frequency) {
+      // Savings vs day passes ($20) or monthly membership ($130)
+      if (frequency === 'today') return [{ key: 'today', label: 'Day Pass', detail: '$20 first child' }];
+      if (frequency === 'multi') {
+        return [
+          { key: '5-day', label: '5 Day', detail: '$90 · never expires', chip: 'Save 10%', chipDetail: 'vs 5 day passes' },
+          { key: '10-day', label: '10 Day', detail: '$160 · never expires', chip: 'Save 20%', chipDetail: 'vs 10 day passes' },
+        ];
+      }
+      return [
+        { key: '1-month', label: '1 Month', detail: '$130' },
+        { key: '4-month', label: '4 Month', detail: '$440', chip: 'Save 15%', chipDetail: 'vs 4 months' },
+        { key: '6-month', label: '6 Month', detail: '$600', chip: 'Save 23%', chipDetail: 'vs 6 months' },
+      ];
+    }
+
+    function readFamily() {
+      state.childrenOnePlus = Number(document.getElementById('children-one-plus')?.value || 0);
+      state.infants = Number(document.getElementById('infants')?.value || 0);
+    }
+
+    function buildQuote() {
+      if (!state.pack || !catalog.packs?.[state.pack]) {
+        state.quote = null;
+        return null;
+      }
+      readFamily();
+      const pack = catalog.packs[state.pack];
+      const labels = catalog.packLabels || {};
+      const lines = [];
+      const explanation = [];
+      const { childrenOnePlus, infants } = state;
+
+      if (childrenOnePlus <= 0 && infants <= 0) {
+        state.quote = { lines: [], explanation: ['Add at least one child.'], total: 0, packLabel: labels[state.pack] || '' };
+        return state.quote;
+      }
+
+      if (childrenOnePlus > 0) {
+        lines.push({ ...pack.primary, role: 'primary' });
+        explanation.push(`First child (ages 1+): ${pack.primary.name} — $${pack.primary.price}`);
+        for (let i = 1; i < childrenOnePlus; i++) {
+          lines.push({ ...pack.additional, role: 'additional', id: `${pack.additional.id}-${i}` });
+          explanation.push(`Additional child ${i + 1} (ages 1+): ${pack.additional.name} — $${pack.additional.price}`);
+        }
+        if (infants > 0) {
+          explanation.push(
+            infants === 1
+              ? '1 infant (ages 0–1) with an older sibling: free'
+              : `${infants} infants (ages 0–1) with an older sibling: free`,
+          );
+        }
+      } else {
+        for (let i = 0; i < infants; i++) {
+          lines.push({ ...pack.infant, role: 'infant', id: `${pack.infant.id}-${i}` });
+          explanation.push(`Infant ${i + 1} (ages 0–1): ${pack.infant.name} — $${pack.infant.price}`);
+        }
+      }
+
+      const total = lines.reduce((sum, line) => sum + line.price, 0);
+      state.quote = { lines, explanation, total, packLabel: labels[state.pack] || pack.primary.name };
+      return state.quote;
+    }
+
+    function updateDynamicNote() {
+      const note = document.getElementById('dynamic-note');
+      if (!note) return;
+      readFamily();
+      let text = '';
+      if (state.frequency === 'membership') text = catalog.notes.membershipBenefits;
+      else if (state.frequency === 'multi') text = catalog.notes.multiDayNeverExpire;
+      if (state.infants > 0 && state.childrenOnePlus > 0) {
+        text = text
+          ? `${text} Infants 0–1 with an older sibling are free.`
+          : catalog.notes.siblingsInfants;
+      } else if (state.infants > 0 && state.childrenOnePlus <= 0) {
+        text = text
+          ? `${text} Infant-only visits use ages 0–1 pricing.`
+          : 'Infant-only visits use ages 0–1 pricing.';
+      }
+      if (text) {
+        note.hidden = false;
+        note.textContent = text;
+      } else {
+        note.hidden = true;
+        note.textContent = '';
+      }
+    }
+
+    function highlightPopularPlan() {
+      const map = {
+        today: 'day-pass',
+        '5-day': '5-day-pass',
+        '10-day': '10-day-pass',
+        '1-month': '1-month',
+        '4-month': '4-month',
+        '6-month': '6-month',
+      };
+      document.querySelectorAll('.pricing-card').forEach((card) => card.classList.remove('is-suggested'));
+      if (!state.pack) return;
+      const id = map[state.pack];
+      const btn = document.querySelector(`.js-buy-plan[data-id="${id}"]`);
+      const card = btn?.closest('.pricing-card');
+      if (card) card.classList.add('is-suggested');
+    }
+
+    function updateStickyBar() {
+      const quote = buildQuote();
+      if (!sticky) return;
+
+      if (!state.pack) {
+        sticky.hidden = true;
+        document.body.classList.remove('has-passes-sticky');
+        return;
+      }
+
+      sticky.hidden = false;
+      document.body.classList.add('has-passes-sticky');
+      if (amountEl) amountEl.textContent = quote ? `$${quote.total}` : '$—';
+      if (packEl) packEl.textContent = quote?.packLabel || '';
+      if (addBtn) addBtn.disabled = !quote || quote.lines.length === 0;
+    }
+
+    function onSelectionChange() {
+      updateDynamicNote();
+      highlightPopularPlan();
+      updateStickyBar();
+    }
+
+    function selectPack(packKey, host) {
+      state.pack = packKey;
+      host?.querySelectorAll('.choice-card').forEach((el) => {
+        el.classList.toggle('is-selected', el.dataset.pack === packKey);
+      });
+      onSelectionChange();
+    }
+
+    function renderPackOptions() {
+      const host = document.getElementById('pack-options');
+      const stepPack = document.getElementById('step-pack');
+      if (!host || !stepPack) return;
+
+      if (!state.frequency) {
+        host.innerHTML = `<p class="note pack-placeholder">Choose how often first</p>`;
+        stepPack.classList.remove('is-ready');
+        state.pack = null;
+        onSelectionChange();
+        return;
+      }
+
+      stepPack.classList.add('is-ready');
+      host.innerHTML = '';
+      const options = packButtonsForFrequency(state.frequency);
+
+      for (const option of options) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'choice-card';
+        btn.dataset.pack = option.key;
+        const chip = option.chip
+          ? `<span class="choice-chip"${option.chipDetail ? ` title="${option.chipDetail}"` : ''}>${option.chip}</span>`
+          : '';
+        btn.innerHTML = `${chip}<span class="choice-title">${option.label}</span><span class="choice-desc">${option.detail}</span>`;
+        btn.addEventListener('click', () => selectPack(option.key, host));
+        host.appendChild(btn);
+      }
+
+      // Auto-select first (or only) pass length for the chosen frequency
+      const autoKey = options.some((o) => o.key === state.pack) ? state.pack : options[0]?.key;
+      if (autoKey) selectPack(autoKey, host);
+      else onSelectionChange();
+    }
+
+    function bindStepper(stepperEl, inputId) {
+      const input = document.getElementById(inputId);
+      if (!stepperEl || !input) return;
+      stepperEl.querySelectorAll('.stepper-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const dir = Number(btn.getAttribute('data-dir') || 0);
+          const min = Number(input.min || 0);
+          const max = Number(input.max || 8);
+          const next = Math.min(max, Math.max(min, Number(input.value || 0) + dir));
+          input.value = String(next);
+          onSelectionChange();
+        });
+      });
+      input.addEventListener('input', () => {
+        const min = Number(input.min || 0);
+        const max = Number(input.max || 8);
+        let val = Number(input.value || 0);
+        if (Number.isNaN(val)) val = min;
+        input.value = String(Math.min(max, Math.max(min, val)));
+        onSelectionChange();
+      });
+    }
+
+    function resetChooser() {
+      state.frequency = null;
+      state.pack = null;
+      state.quote = null;
+      root.querySelectorAll('.choice-card').forEach((el) => el.classList.remove('is-selected'));
+      document.getElementById('step-pack')?.classList.remove('is-ready');
+      document.getElementById('step-family')?.classList.remove('is-ready');
+      const kids = document.getElementById('children-one-plus');
+      const infants = document.getElementById('infants');
+      if (kids) kids.value = '1';
+      if (infants) infants.value = '0';
+      renderPackOptions();
+    }
+
+    root.querySelectorAll('[data-frequency]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.frequency = btn.getAttribute('data-frequency');
+        state.pack = null;
+        root.querySelectorAll('[data-frequency]').forEach((el) => el.classList.remove('is-selected'));
+        btn.classList.add('is-selected');
+        document.getElementById('step-family')?.classList.add('is-ready');
+        renderPackOptions();
+      });
+    });
+
+    bindStepper(root.querySelector('[data-stepper="infants"]'), 'infants');
+    bindStepper(root.querySelector('[data-stepper="children"]'), 'children-one-plus');
+
+    document.getElementById('restart-chooser')?.addEventListener('click', resetChooser);
+
+    addBtn?.addEventListener('click', () => {
+      const quote = buildQuote();
+      if (!quote || !quote.lines.length) return;
+      window.dispatchEvent(
+        new CustomEvent('pu:cart:add', {
+          detail: {
+            lines: quote.lines.map((line) => ({
+              id: line.id,
+              name: line.name,
+              price: line.price,
+              purchaseUrl: line.purchaseUrl,
+            })),
+          },
+        }),
+      );
+    });
+
+    renderPackOptions();
+    onSelectionChange();
+  }
+</script>

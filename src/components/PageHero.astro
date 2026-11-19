@@ -1,0 +1,232 @@
+---
+import { asset } from '../lib/asset';
+
+interface Cta {
+  href: string;
+  label: string;
+  variant?: 'primary' | 'secondary' | 'outline' | 'blue';
+}
+
+interface Slide {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  title: string;
+  lede: string;
+  kicker?: string;
+  /** Line under the title (e.g. value-prop hook) */
+  subhead?: string;
+  ctas?: Cta[];
+  slides: Slide[];
+  sliderId?: string;
+  /** Homepage only — auto-advancing carousel */
+  carousel?: boolean;
+  floats?: Array<'plane' | 'stacker' | 'bear' | 'blocks' | 'car' | 'ball' | 'tower'>;
+}
+
+const {
+  title,
+  lede,
+  kicker,
+  subhead,
+  ctas = [],
+  slides,
+  sliderId = 'page-hero-slider',
+  carousel = false,
+  floats = ['plane', 'stacker', 'bear'],
+} = Astro.props;
+
+const floatSrc: Record<string, string> = {
+  plane: asset('images/float/plane.png'),
+  stacker: asset('images/float/stacker.png'),
+  bear: asset('images/float/bear.png'),
+  blocks: asset('images/float/blocks.png'),
+  car: asset('images/float/car.png'),
+  ball: asset('images/float/ball.png'),
+  tower: asset('images/float/blocks-tower.png'),
+};
+
+const floatClass: Record<string, string> = {
+  plane: 'float-plane',
+  stacker: 'float-stacker',
+  bear: 'float-bear',
+  blocks: 'float-blocks',
+  car: 'float-car',
+  ball: 'float-ball',
+  tower: 'float-tower',
+};
+
+/** Parallax depth — higher moves more with scroll/pointer (no idle motion). */
+const floatDepth: Record<string, string> = {
+  plane: '0.12',
+  stacker: '0.22',
+  bear: '0.16',
+  blocks: '0.28',
+  car: '0.18',
+  ball: '0.24',
+  tower: '0.2',
+};
+
+const showCarousel = carousel && slides.length > 1;
+const primary = slides[0];
+---
+
+<section class="home-hero page-hero" aria-label={title}>
+  <div class="wrap home-hero-inner">
+    <div class="hero-copy">
+      {kicker ? <p class="hero-kicker">{kicker}</p> : null}
+      <h1>{title}</h1>
+      {subhead ? <p class="hero-subhead">{subhead}</p> : null}
+      <p class="lede">{lede}</p>
+      {
+        ctas.length ? (
+          <div class="cta-row">
+            {ctas.map((cta) => (
+              <a class={`btn btn-${cta.variant ?? 'primary'}`} href={asset(cta.href)}>
+                {cta.label}
+              </a>
+            ))}
+          </div>
+        ) : null
+      }
+    </div>
+
+    <div class="hero-stage" data-parallax-stage>
+      {
+        showCarousel ? (
+          <div class="hero-slider" id={sliderId} data-interval="4000">
+            {slides.map((slide, i) => (
+              <figure class:list={['hero-slide', i === 0 && 'is-active']} data-index={i}>
+                <img src={slide.src} alt={slide.alt} width="960" height="720" />
+              </figure>
+            ))}
+            <div class="hero-dots" role="tablist" aria-label={`${title} slides`}>
+              {slides.map((_, i) => (
+                <button
+                  type="button"
+                  class:list={['hero-dot', i === 0 && 'is-active']}
+                  aria-label={`Show slide ${i + 1}`}
+                  data-goto={i}
+                />
+              ))}
+            </div>
+          </div>
+        ) : primary ? (
+          <figure class="hero-frame">
+            <img src={primary.src} alt={primary.alt} width="960" height="720" />
+          </figure>
+        ) : null
+      }
+
+      {
+        floats.map((key) => (
+          <img
+            class={`float-toy ${floatClass[key]}`}
+            src={floatSrc[key]}
+            alt=""
+            width="140"
+            height="140"
+            data-parallax
+            data-depth={floatDepth[key]}
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  (function initFloatParallax() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const stages = [...document.querySelectorAll('[data-parallax-stage]')];
+    if (!stages.length) return;
+
+    const pointer = { x: 0, y: 0 };
+    let ticking = false;
+
+    function render() {
+      ticking = false;
+      for (const stage of stages) {
+        const rect = stage.getBoundingClientRect();
+        const midX = rect.left + rect.width / 2;
+        const midY = rect.top + rect.height / 2;
+        const nx = (pointer.x - midX) / Math.max(rect.width, 1);
+        const ny = (pointer.y - midY) / Math.max(rect.height, 1);
+        const scrollFactor = Math.min(Math.max((window.innerHeight / 2 - midY) / window.innerHeight, -1), 1);
+
+        stage.querySelectorAll('[data-parallax]').forEach((el) => {
+          const depth = Number(el.getAttribute('data-depth') || 0.2);
+          const x = nx * depth * 28;
+          const y = ny * depth * 22 + scrollFactor * depth * 36;
+          const rotate =
+            getComputedStyle(el).getPropertyValue('--float-rotate').trim() || '0deg';
+          el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${rotate})`;
+        });
+      }
+    }
+
+    function requestRender() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(render);
+    }
+
+    window.addEventListener(
+      'pointermove',
+      (event) => {
+        pointer.x = event.clientX;
+        pointer.y = event.clientY;
+        requestRender();
+      },
+      { passive: true },
+    );
+
+    window.addEventListener('scroll', requestRender, { passive: true });
+
+    requestRender();
+  })();
+</script>
+
+{
+  showCarousel ? (
+    <script define:vars={{ sliderId }}>
+      const root = document.getElementById(sliderId);
+      if (root) {
+        const slides = [...root.querySelectorAll('.hero-slide')];
+        const dots = [...root.querySelectorAll('.hero-dot')];
+        const interval = Number(root.getAttribute('data-interval') || 4000);
+        let index = 0;
+        let timer;
+
+        function show(next) {
+          index = (next + slides.length) % slides.length;
+          slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
+          dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+        }
+
+        function start() {
+          stop();
+          timer = window.setInterval(() => show(index + 1), interval);
+        }
+
+        function stop() {
+          if (timer) window.clearInterval(timer);
+        }
+
+        dots.forEach((dot) => {
+          dot.addEventListener('click', () => {
+            show(Number(dot.getAttribute('data-goto') || 0));
+            start();
+          });
+        });
+
+        root.addEventListener('mouseenter', stop);
+        root.addEventListener('mouseleave', start);
+        start();
+      }
+    </script>
+  ) : null
+}
