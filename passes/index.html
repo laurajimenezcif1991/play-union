@@ -1,0 +1,317 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Play Union day passes, punch cards, and memberships — clear pricing for families in Somerville."><meta name="generator" content="Astro v5.18.2"><link rel="icon" type="image/png" href="/play-union/images/logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet"><style>
+      @font-face {
+        font-family: 'Archer Pro';
+        src:
+          url('/play-union/fonts/ArcherPro-Medium.woff2') format('woff2'),
+          url('/play-union/fonts/ArcherPro-Medium.woff') format('woff'),
+          url('/play-union/fonts/ArcherPro-Medium.otf') format('opentype'),
+          url('/play-union/fonts/ArcherPro-Medium.ttf') format('truetype');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style><title>Passes &amp; Memberships | Play Union</title><link rel="stylesheet" href="/play-union/_astro/about.gGksTFfd.css"></head> <body> <div class="site-bg" aria-hidden="true"> <img class="crayon crayon-sun" src="/play-union/images/crayon/sun.png" alt="" width="320" height="280"> <img class="crayon crayon-heart" src="/play-union/images/crayon/heart.png" alt="" width="210" height="190"> <img class="crayon crayon-star" src="/play-union/images/crayon/star.png" alt="" width="140" height="140"> <img class="crayon crayon-cloud" src="/play-union/images/crayon/cloud.png" alt="" width="400" height="140"> <img class="crayon crayon-car" src="/play-union/images/crayon/car.png" alt="" width="320" height="220"> <img class="crayon crayon-music-note" src="/play-union/images/crayon/music-note.png" alt="" width="160" height="220"> <img class="crayon crayon-music-notes" src="/play-union/images/crayon/music-notes.png" alt="" width="200" height="180"> </div> <a class="skip-link" href="#main">Skip to content</a> <div class="demo-banner" role="status"> <span>Demo</span>
+Checkout is simulated until Shopify is connected.
+</div> <div class="cart-backdrop" id="cart-backdrop" hidden></div> <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title" hidden> <div class="cart-drawer-header"> <h2 id="cart-drawer-title">Your cart</h2> <button type="button" class="cart-close" id="cart-close" aria-label="Close cart"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="22"
+  height="22"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-x"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M18 6l-12 12" />
+  <path d="M6 6l12 12" />
+</svg> </button> </div> <div class="cart-drawer-body"> <p class="cart-empty note" id="cart-empty">Your cart is empty.</p> <ul class="cart-lines" id="cart-lines"></ul> </div> <div class="cart-drawer-footer"> <div class="cart-total-row"> <span>Subtotal</span> <strong id="cart-subtotal">$0</strong> </div> <button type="button" class="btn btn-primary" id="cart-checkout" disabled>Checkout</button> <button type="button" class="btn btn-outline" id="cart-clear">Clear cart</button> </div> </aside> <div class="checkout-modal" id="checkout-modal" hidden> <div class="checkout-modal-card" role="alertdialog" aria-labelledby="checkout-modal-title"> <h2 id="checkout-modal-title">Checkout</h2> <p>
+With Shopify connected, this would open secure checkout with these items already in the cart.
+</p> <div class="cta-row"> <button type="button" class="btn btn-primary" id="checkout-modal-close">Got it</button> </div> </div> </div> <script type="module">const p="pu-demo-cart-v1";function l(){try{const e=localStorage.getItem(p),t=e?JSON.parse(e):[];return Array.isArray(t)?t:[]}catch{return[]}}function i(e){localStorage.setItem(p,JSON.stringify(e)),window.dispatchEvent(new CustomEvent("pu:cart:change",{detail:{items:e}}))}function y(e){return`$${e.toFixed(0)}`}function o(){const e=l(),t=document.getElementById("cart-count"),n=document.getElementById("cart-lines"),a=document.getElementById("cart-empty"),m=document.getElementById("cart-subtotal"),E=document.getElementById("cart-checkout"),r=e.reduce((d,c)=>d+(c.qty||1),0),g=e.reduce((d,c)=>d+c.price*(c.qty||1),0);if(t&&(t.textContent=String(r)),m&&(m.textContent=y(g)),E&&(E.disabled=r===0),!(!n||!a)){n.innerHTML="",a.hidden=r>0;for(const d of e){const c=document.createElement("li");c.className="cart-line",c.innerHTML=`
+        <div>
+          <strong>${d.name}</strong>
+        </div>
+        <div class="cart-line-aside">
+          <span>${y(d.price*(d.qty||1))}</span>
+          <button type="button" class="cart-remove" data-id="${d.lineId}">Remove</button>
+        </div>
+      `,n.appendChild(c)}}}function u(){const e=document.getElementById("cart-drawer"),t=document.getElementById("cart-backdrop"),n=document.getElementById("cart-fab");!e||!t||!n||(e.hidden=!1,t.hidden=!1,requestAnimationFrame(()=>{e.classList.add("open"),t.classList.add("open")}),n.setAttribute("aria-expanded","true"),document.body.classList.add("cart-open"))}function s(){const e=document.getElementById("cart-drawer"),t=document.getElementById("cart-backdrop"),n=document.getElementById("cart-fab");!e||!t||!n||(e.classList.remove("open"),t.classList.remove("open"),n.setAttribute("aria-expanded","false"),document.body.classList.remove("cart-open"),window.setTimeout(()=>{e.hidden=!0,t.hidden=!0},220))}function I(e){const t=l();for(const n of e)t.push({lineId:`${n.id}-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,id:n.id,name:n.name,price:n.price,qty:1,purchaseUrl:n.purchaseUrl||null});i(t),o(),u()}function f(){document.getElementById("cart-fab")?.addEventListener("click",u),document.getElementById("cart-close")?.addEventListener("click",s),document.getElementById("cart-backdrop")?.addEventListener("click",s),document.getElementById("cart-clear")?.addEventListener("click",()=>{i([]),o()}),document.getElementById("cart-lines")?.addEventListener("click",e=>{const t=e.target;if(!(t instanceof HTMLElement))return;const n=t.getAttribute("data-id");!n||!t.classList.contains("cart-remove")||(i(l().filter(a=>a.lineId!==n)),o())}),document.getElementById("cart-checkout")?.addEventListener("click",()=>{const e=document.getElementById("checkout-modal");e&&(e.hidden=!1)}),document.getElementById("checkout-modal-close")?.addEventListener("click",()=>{const e=document.getElementById("checkout-modal");e&&(e.hidden=!0)}),o()}window.addEventListener("pu:cart:add",e=>{const t=e.detail;t?.lines?.length&&I(t.lines)});window.addEventListener("pu:cart:open",u);window.addEventListener("keydown",e=>{if(e.key==="Escape"){s();const t=document.getElementById("checkout-modal");t&&(t.hidden=!0)}});document.readyState==="loading"?document.addEventListener("DOMContentLoaded",f):f();</script> <header class="site-header"> <div class="wrap header-inner"> <a class="brand" href="/play-union/"> <img src="/play-union/images/logo.png" width="112" height="56" alt="Play Union logo"> <span class="brand-text"> <span class="brand-name" aria-label="Play Union"> <span>P</span><span>l</span><span>a</span><span>y</span><span class="union">Union</span> </span> <span class="brand-tag">Play • Learn • Grow</span> </span> </a> <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" id="nav-toggle"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="22"
+  height="22"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg> <span>Menu</span> </button> <div class="nav-panel" id="site-nav"> <nav aria-label="Primary"> <ul class="nav-list"> <li> <a href="/play-union/"> Home </a> </li><li> <a href="/play-union/visit/"> Visit </a> </li><li> <a href="/play-union/passes/" aria-current="page"> Passes </a> </li><li> <a href="/play-union/classes-events/"> Events &amp; Classes </a> </li><li> <a href="/play-union/private-events/birthday-parties/"> Parties </a> </li><li> <a href="/play-union/contact/"> Contact </a> </li> </ul> </nav> <div class="header-actions"> <button type="button" class="header-cart" id="cart-fab" aria-label="Cart" aria-haspopup="dialog" aria-controls="cart-drawer" aria-expanded="false"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M4 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M15 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M17 17h-11v-14h-2" />
+  <path d="M6 5l14 1l-1 7h-13" />
+</svg> <span class="cart-count" id="cart-count" aria-live="polite">0</span> </button> <a class="btn btn-primary header-cta" href="/play-union/visit/">Plan Your Visit</a> </div> </div> </div> </header> <script type="module">const e=document.getElementById("nav-toggle"),n=document.getElementById("site-nav");e?.addEventListener("click",()=>{const t=n?.classList.toggle("open");e.setAttribute("aria-expanded",t?"true":"false")});</script> <main id="main">  <section class="section section-tight"> <div class="wrap"> <section class="passes-finder" id="pass-chooser" data-catalog="{&#34;packs&#34;:{&#34;today&#34;:{&#34;primary&#34;:{&#34;id&#34;:&#34;day-pass&#34;,&#34;name&#34;:&#34;Day Pass&#34;,&#34;price&#34;:20,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/1-day-pass&#34;},&#34;additional&#34;:{&#34;id&#34;:&#34;addl-child-day-pass&#34;,&#34;name&#34;:&#34;Add'l Child Day Pass&#34;,&#34;price&#34;:10,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/1-day-sibling-or-second-child-pass&#34;},&#34;infant&#34;:{&#34;id&#34;:&#34;day-pass-0-1&#34;,&#34;name&#34;:&#34;Day Pass Ages 0-1yr&#34;,&#34;price&#34;:10,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/1-day-pass-ages-0-1yr&#34;}},&#34;5-day&#34;:{&#34;primary&#34;:{&#34;id&#34;:&#34;5-day-pass&#34;,&#34;name&#34;:&#34;5 Day Pass&#34;,&#34;price&#34;:90,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/5-day-pass&#34;},&#34;additional&#34;:{&#34;id&#34;:&#34;addl-child-5-day&#34;,&#34;name&#34;:&#34;Add'l Child 5 Day Pass&#34;,&#34;price&#34;:45,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/5-day-pass-sibling-or-second-child&#34;},&#34;infant&#34;:{&#34;id&#34;:&#34;5-day-0-1&#34;,&#34;name&#34;:&#34;5 Day Pass Ages 0-1yr&#34;,&#34;price&#34;:45,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/5-day-pass-ages-0-1yr&#34;}},&#34;10-day&#34;:{&#34;primary&#34;:{&#34;id&#34;:&#34;10-day-pass&#34;,&#34;name&#34;:&#34;10 Day Pass&#34;,&#34;price&#34;:160,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/10-day-pass&#34;},&#34;additional&#34;:{&#34;id&#34;:&#34;addl-child-10-day&#34;,&#34;name&#34;:&#34;Add'l Child 10 Day Pass&#34;,&#34;price&#34;:80,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/10-day-pass-sibling-or-second-child&#34;},&#34;infant&#34;:{&#34;id&#34;:&#34;10-day-0-1&#34;,&#34;name&#34;:&#34;10 Day Pass Ages 0-1yr&#34;,&#34;price&#34;:80,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/10-day-pass-ages-0-1yr&#34;}},&#34;1-month&#34;:{&#34;primary&#34;:{&#34;id&#34;:&#34;1-month&#34;,&#34;name&#34;:&#34;1 Month Membership&#34;,&#34;price&#34;:130,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/1-month-membership&#34;},&#34;additional&#34;:{&#34;id&#34;:&#34;addl-1-month&#34;,&#34;name&#34;:&#34;Add'l Child 1 Month Membership&#34;,&#34;price&#34;:65,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/1-month-membership-sibling-or-second-child&#34;},&#34;infant&#34;:{&#34;id&#34;:&#34;1-month-0-1&#34;,&#34;name&#34;:&#34;1 Month Membership Ages 0-1Yr&#34;,&#34;price&#34;:65,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/1-month-membership-ages-0-1yr&#34;}},&#34;4-month&#34;:{&#34;primary&#34;:{&#34;id&#34;:&#34;4-month&#34;,&#34;name&#34;:&#34;4 Month Membership&#34;,&#34;price&#34;:440,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/4-month-membership&#34;},&#34;additional&#34;:{&#34;id&#34;:&#34;addl-4-month&#34;,&#34;name&#34;:&#34;Add'l Child 4 Month Membership&#34;,&#34;price&#34;:220,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/4-month-membership-sibling-or-second-child&#34;},&#34;infant&#34;:{&#34;id&#34;:&#34;4-month-0-1&#34;,&#34;name&#34;:&#34;4 Month Membership Ages 0-1Yr&#34;,&#34;price&#34;:220,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/4-month-membership-ages-0-1yr&#34;}},&#34;6-month&#34;:{&#34;primary&#34;:{&#34;id&#34;:&#34;6-month&#34;,&#34;name&#34;:&#34;6 Month Membership&#34;,&#34;price&#34;:600,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/6-month-membership&#34;},&#34;additional&#34;:{&#34;id&#34;:&#34;addl-6-month&#34;,&#34;name&#34;:&#34;Add'l Child 6 Month Membership&#34;,&#34;price&#34;:300,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/6-month-membership-sibling-or-second-child&#34;},&#34;infant&#34;:{&#34;id&#34;:&#34;6-month-0-1&#34;,&#34;name&#34;:&#34;6 Month Membership Ages 0-1yr&#34;,&#34;price&#34;:300,&#34;purchaseUrl&#34;:&#34;https://play-union.myshopify.com/products/6-month-membership-ages-0-1yr&#34;}}},&#34;packLabels&#34;:{&#34;today&#34;:&#34;Day Pass&#34;,&#34;5-day&#34;:&#34;5 Day Pass&#34;,&#34;10-day&#34;:&#34;10 Day Pass&#34;,&#34;1-month&#34;:&#34;1 Month Membership&#34;,&#34;4-month&#34;:&#34;4 Month Membership&#34;,&#34;6-month&#34;:&#34;6 Month Membership&#34;},&#34;notes&#34;:{&#34;siblingsInfants&#34;:&#34;Siblings ages 0–1 yr are always free when visiting with an older sibling.&#34;,&#34;multiDayNeverExpire&#34;:&#34;5 and 10 Day Passes are punch cards that never expire.&#34;,&#34;membershipBenefits&#34;:&#34;Membership includes 10% off all parties and 2 crafts per week for children ages 2+.&#34;}}"> <header class="passes-finder-hero"> <h1>Passes &amp; Memberships</h1> <p class="passes-lead">Build a pass for your family. Your picks update as you choose.</p> </header> <div class="passes-finder-steps" aria-label="Pass finder"> <div class="chooser-step is-active" data-step="1"> <h2>How often?</h2> <div class="choice-grid choice-grid-compact" role="radiogroup" aria-label="How often will you visit?"> <button type="button" class="choice-card" data-frequency="today"> <span class="choice-title">Today</span> <span class="choice-desc">Day Pass</span> </button> <button type="button" class="choice-card" data-frequency="multi"> <span class="choice-chip">Save up to 20%</span> <span class="choice-title">A few visits</span> <span class="choice-desc">5 or 10 Day card</span> </button> <button type="button" class="choice-card" data-frequency="membership"> <span class="choice-chip">Save up to 23%</span> <span class="choice-title">Often</span> <span class="choice-desc">Membership</span> </button> </div> </div> <div class="chooser-step" data-step="2" id="step-pack"> <h2>Pass length</h2> <div class="choice-grid choice-grid-compact" id="pack-options" role="radiogroup" aria-label="Pass length"> <p class="note pack-placeholder">Choose how often first</p> </div> </div> <div class="chooser-step" data-step="3" id="step-family"> <h2>Who’s coming?</h2> <div class="family-fields"> <div class="stepper" data-stepper="infants"> <span class="stepper-label" id="label-infants">Ages 0–1</span> <div class="stepper-controls"> <button type="button" class="stepper-btn" data-dir="-1" aria-label="Fewer ages 0 to 1">−</button> <input type="number" id="infants" min="0" max="8" value="0" inputmode="numeric" aria-labelledby="label-infants"> <button type="button" class="stepper-btn" data-dir="1" aria-label="More ages 0 to 1">+</button> </div> </div> <div class="stepper" data-stepper="children"> <span class="stepper-label" id="label-children">Ages 1+</span> <div class="stepper-controls"> <button type="button" class="stepper-btn" data-dir="-1" aria-label="Fewer ages 1 and up">−</button> <input type="number" id="children-one-plus" min="0" max="8" value="1" inputmode="numeric" aria-labelledby="label-children"> <button type="button" class="stepper-btn" data-dir="1" aria-label="More ages 1 and up">+</button> </div> </div> </div> <p class="note passes-context" id="dynamic-note" hidden></p> </div> </div> </section> <div class="passes-sticky-bar" id="passes-sticky-bar" hidden> <div class="wrap passes-sticky-inner"> <div class="passes-sticky-total"> <span class="passes-sticky-label">Your total</span> <strong id="passes-sticky-amount">$—</strong> <span class="passes-sticky-pack note" id="passes-sticky-pack"></span> </div> <div class="passes-sticky-actions"> <button type="button" class="btn btn-outline" id="restart-chooser">Reset</button> <button type="button" class="btn btn-secondary" id="add-pass-to-cart" disabled>Add to cart</button> </div> </div> </div> <script type="module" src="/play-union/_astro/PassChooser.astro_astro_type_script_index_0_lang.DMyjtSvy.js"></script> </div> </section> <section class="pricing-hero" aria-labelledby="plans-heading"> <div class="wrap"> <div class="pricing-intro"> <h2 id="plans-heading">Popular plans</h2> <p>Prefer to browse? Pick a plan below — or use the finder above for a family total.</p> </div> <div class="pricing-grid"> <article class="pricing-card">  <div class="pricing-icon" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="28"
+  height="28"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-ticket"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M15 5l0 2" />
+  <path d="M15 11l0 2" />
+  <path d="M15 17l0 2" />
+  <path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
+</svg> </div> <h3>Day Pass</h3> <p class="pricing-price"> $20 <span class="pricing-price-note">first child</span> </p> <ul class="pricing-features"> <li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Open play during published hours </li><li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Additional child $10 </li><li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Ages 0–1: $10 · siblings 0–1 free </li> </ul> <button type="button" class="btn pricing-buy js-buy-plan" data-id="day-pass" data-name="Day Pass" data-price="20" data-url="https://play-union.myshopify.com/products/1-day-pass">
+Buy &amp; activate
+</button> </article><article class="pricing-card is-featured"> <span class="pricing-badge">Best value</span> <div class="pricing-icon" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="28"
+  height="28"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-rubber-stamp"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M21 17.85h-18c0 -4.05 1.421 -4.05 3.79 -4.05c5.21 0 1.21 -4.59 1.21 -6.8a4 4 0 1 1 8 0c0 2.21 -4 6.8 1.21 6.8c2.369 0 3.79 0 3.79 4.05" />
+  <path d="M5 21h14" />
+</svg> </div> <h3>5 Day Pass</h3> <p class="pricing-price"> $90 <span class="pricing-price-note">punch card</span> </p> <ul class="pricing-features"> <li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Five visits · never expires </li><li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Additional child $45 </li><li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Share across visits anytime </li> </ul> <button type="button" class="btn pricing-buy js-buy-plan" data-id="5-day-pass" data-name="5 Day Pass" data-price="90" data-url="https://play-union.myshopify.com/products/5-day-pass">
+Buy &amp; activate
+</button> </article><article class="pricing-card">  <div class="pricing-icon" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="28"
+  height="28"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-layers-intersect"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M8 6a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -8" />
+  <path d="M4 10a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -8" />
+</svg> </div> <h3>10 Day Pass</h3> <p class="pricing-price"> $160 <span class="pricing-price-note">punch card</span> </p> <ul class="pricing-features"> <li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Ten visits · never expires </li><li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Additional child $80 </li><li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Best for regular drop-ins </li> </ul> <button type="button" class="btn pricing-buy js-buy-plan" data-id="10-day-pass" data-name="10 Day Pass" data-price="160" data-url="https://play-union.myshopify.com/products/10-day-pass">
+Buy &amp; activate
+</button> </article><article class="pricing-card">  <div class="pricing-icon" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="28"
+  height="28"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-star"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245" />
+</svg> </div> <h3>1 Month Membership</h3> <p class="pricing-price"> $130 <span class="pricing-price-note">/mo</span> </p> <ul class="pricing-features"> <li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Unlimited open play for the month </li><li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> 10% off parties · 2 crafts/week (ages 2+) </li><li> <span class="check" aria-hidden="true"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-check"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M5 12l5 5l10 -10" />
+</svg> </span> Additional child $65 </li> </ul> <button type="button" class="btn pricing-buy js-buy-plan" data-id="1-month" data-name="1 Month Membership" data-price="130" data-url="https://play-union.myshopify.com/products/1-month-membership">
+Buy &amp; activate
+</button> </article> </div> <div class="pricing-more"> <p>
+Longer memberships: <strong>4 Month $440</strong> · <strong>6 Month $600</strong>
+(additional child half price).
+</p> <div class="cta-row"> <button type="button" class="btn btn-outline js-buy-plan" data-id="4-month" data-name="4 Month Membership" data-price="440" data-url="https://play-union.myshopify.com/products/4-month-membership">
+Buy 4 Month
+</button> <button type="button" class="btn btn-outline js-buy-plan" data-id="6-month" data-name="6 Month Membership" data-price="600" data-url="https://play-union.myshopify.com/products/6-month-membership">
+Buy 6 Month
+</button> </div> </div> </div> </section> <script type="module">document.querySelectorAll(".js-buy-plan").forEach(e=>{e.addEventListener("click",()=>{window.dispatchEvent(new CustomEvent("pu:cart:add",{detail:{lines:[{id:e.getAttribute("data-id"),name:e.getAttribute("data-name"),price:Number(e.getAttribute("data-price")||0),purchaseUrl:e.getAttribute("data-url")||null}]}}))})});</script>  </main> <footer class="site-footer"> <div class="wrap footer-grid"> <div> <h2 style="color:white;font-size:1.35rem;">Play Union</h2> <p>Play • Learn • Grow</p> <p> 378 Somerville Ave<br> Somerville, MA 02143 </p> <p> <a href="tel:617-764-3570">617-764-3570</a><br> <a href="mailto:info@playunionsomerville.com">info@playunionsomerville.com</a> </p> </div> <div> <h3 style="color:white;">Explore</h3> <p><a href="/play-union/visit/">Visit</a></p> <p><a href="/play-union/passes/">Passes</a></p> <p><a href="/play-union/classes-events/">Events</a></p> <p><a href="/play-union/private-events/birthday-parties/">Parties</a></p> <p><a href="/play-union/contact/">Contact</a></p> </div> <div> <h3 style="color:white;">More info</h3> <p> <a href="/play-union/about/">About</a> </p><p> <a href="/play-union/faq/">FAQ</a> </p><p> <a href="/play-union/visit/#hours">Hours</a> </p><p> <a href="/play-union/private-events/other-rentals/">Other private rentals</a> </p><p> <a href="/play-union/private-events/partnerships/">Partnerships</a> </p> <p> <a href="https://www.instagram.com/playunion/" rel="noopener noreferrer" target="_blank">Instagram</a> </p> </div> </div> <div class="wrap footer-bottom"> <p>© 2026 Play Union</p> </div> </footer> </body></html>

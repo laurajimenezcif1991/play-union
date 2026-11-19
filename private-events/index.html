@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Book kids’ birthday parties, inquire about other private rentals, or explore partnerships at Play Union in Somerville."><meta name="generator" content="Astro v5.18.2"><link rel="icon" type="image/png" href="/play-union/images/logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet"><style>
+      @font-face {
+        font-family: 'Archer Pro';
+        src:
+          url('/play-union/fonts/ArcherPro-Medium.woff2') format('woff2'),
+          url('/play-union/fonts/ArcherPro-Medium.woff') format('woff'),
+          url('/play-union/fonts/ArcherPro-Medium.otf') format('opentype'),
+          url('/play-union/fonts/ArcherPro-Medium.ttf') format('truetype');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style><title>Private Events | Play Union</title><link rel="stylesheet" href="/play-union/_astro/about.gGksTFfd.css"></head> <body> <div class="site-bg" aria-hidden="true"> <img class="crayon crayon-sun" src="/play-union/images/crayon/sun.png" alt="" width="320" height="280"> <img class="crayon crayon-heart" src="/play-union/images/crayon/heart.png" alt="" width="210" height="190"> <img class="crayon crayon-star" src="/play-union/images/crayon/star.png" alt="" width="140" height="140"> <img class="crayon crayon-cloud" src="/play-union/images/crayon/cloud.png" alt="" width="400" height="140"> <img class="crayon crayon-car" src="/play-union/images/crayon/car.png" alt="" width="320" height="220"> <img class="crayon crayon-music-note" src="/play-union/images/crayon/music-note.png" alt="" width="160" height="220"> <img class="crayon crayon-music-notes" src="/play-union/images/crayon/music-notes.png" alt="" width="200" height="180"> </div> <a class="skip-link" href="#main">Skip to content</a> <div class="demo-banner" role="status"> <span>Demo</span>
+Checkout is simulated until Shopify is connected.
+</div> <div class="cart-backdrop" id="cart-backdrop" hidden></div> <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title" hidden> <div class="cart-drawer-header"> <h2 id="cart-drawer-title">Your cart</h2> <button type="button" class="cart-close" id="cart-close" aria-label="Close cart"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="22"
+  height="22"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-x"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M18 6l-12 12" />
+  <path d="M6 6l12 12" />
+</svg> </button> </div> <div class="cart-drawer-body"> <p class="cart-empty note" id="cart-empty">Your cart is empty.</p> <ul class="cart-lines" id="cart-lines"></ul> </div> <div class="cart-drawer-footer"> <div class="cart-total-row"> <span>Subtotal</span> <strong id="cart-subtotal">$0</strong> </div> <button type="button" class="btn btn-primary" id="cart-checkout" disabled>Checkout</button> <button type="button" class="btn btn-outline" id="cart-clear">Clear cart</button> </div> </aside> <div class="checkout-modal" id="checkout-modal" hidden> <div class="checkout-modal-card" role="alertdialog" aria-labelledby="checkout-modal-title"> <h2 id="checkout-modal-title">Checkout</h2> <p>
+With Shopify connected, this would open secure checkout with these items already in the cart.
+</p> <div class="cta-row"> <button type="button" class="btn btn-primary" id="checkout-modal-close">Got it</button> </div> </div> </div> <script type="module">const p="pu-demo-cart-v1";function l(){try{const e=localStorage.getItem(p),t=e?JSON.parse(e):[];return Array.isArray(t)?t:[]}catch{return[]}}function i(e){localStorage.setItem(p,JSON.stringify(e)),window.dispatchEvent(new CustomEvent("pu:cart:change",{detail:{items:e}}))}function y(e){return`$${e.toFixed(0)}`}function o(){const e=l(),t=document.getElementById("cart-count"),n=document.getElementById("cart-lines"),a=document.getElementById("cart-empty"),m=document.getElementById("cart-subtotal"),E=document.getElementById("cart-checkout"),r=e.reduce((d,c)=>d+(c.qty||1),0),g=e.reduce((d,c)=>d+c.price*(c.qty||1),0);if(t&&(t.textContent=String(r)),m&&(m.textContent=y(g)),E&&(E.disabled=r===0),!(!n||!a)){n.innerHTML="",a.hidden=r>0;for(const d of e){const c=document.createElement("li");c.className="cart-line",c.innerHTML=`
+        <div>
+          <strong>${d.name}</strong>
+        </div>
+        <div class="cart-line-aside">
+          <span>${y(d.price*(d.qty||1))}</span>
+          <button type="button" class="cart-remove" data-id="${d.lineId}">Remove</button>
+        </div>
+      `,n.appendChild(c)}}}function u(){const e=document.getElementById("cart-drawer"),t=document.getElementById("cart-backdrop"),n=document.getElementById("cart-fab");!e||!t||!n||(e.hidden=!1,t.hidden=!1,requestAnimationFrame(()=>{e.classList.add("open"),t.classList.add("open")}),n.setAttribute("aria-expanded","true"),document.body.classList.add("cart-open"))}function s(){const e=document.getElementById("cart-drawer"),t=document.getElementById("cart-backdrop"),n=document.getElementById("cart-fab");!e||!t||!n||(e.classList.remove("open"),t.classList.remove("open"),n.setAttribute("aria-expanded","false"),document.body.classList.remove("cart-open"),window.setTimeout(()=>{e.hidden=!0,t.hidden=!0},220))}function I(e){const t=l();for(const n of e)t.push({lineId:`${n.id}-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,id:n.id,name:n.name,price:n.price,qty:1,purchaseUrl:n.purchaseUrl||null});i(t),o(),u()}function f(){document.getElementById("cart-fab")?.addEventListener("click",u),document.getElementById("cart-close")?.addEventListener("click",s),document.getElementById("cart-backdrop")?.addEventListener("click",s),document.getElementById("cart-clear")?.addEventListener("click",()=>{i([]),o()}),document.getElementById("cart-lines")?.addEventListener("click",e=>{const t=e.target;if(!(t instanceof HTMLElement))return;const n=t.getAttribute("data-id");!n||!t.classList.contains("cart-remove")||(i(l().filter(a=>a.lineId!==n)),o())}),document.getElementById("cart-checkout")?.addEventListener("click",()=>{const e=document.getElementById("checkout-modal");e&&(e.hidden=!1)}),document.getElementById("checkout-modal-close")?.addEventListener("click",()=>{const e=document.getElementById("checkout-modal");e&&(e.hidden=!0)}),o()}window.addEventListener("pu:cart:add",e=>{const t=e.detail;t?.lines?.length&&I(t.lines)});window.addEventListener("pu:cart:open",u);window.addEventListener("keydown",e=>{if(e.key==="Escape"){s();const t=document.getElementById("checkout-modal");t&&(t.hidden=!0)}});document.readyState==="loading"?document.addEventListener("DOMContentLoaded",f):f();</script> <header class="site-header"> <div class="wrap header-inner"> <a class="brand" href="/play-union/"> <img src="/play-union/images/logo.png" width="112" height="56" alt="Play Union logo"> <span class="brand-text"> <span class="brand-name" aria-label="Play Union"> <span>P</span><span>l</span><span>a</span><span>y</span><span class="union">Union</span> </span> <span class="brand-tag">Play • Learn • Grow</span> </span> </a> <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" id="nav-toggle"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="22"
+  height="22"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg> <span>Menu</span> </button> <div class="nav-panel" id="site-nav"> <nav aria-label="Primary"> <ul class="nav-list"> <li> <a href="/play-union/"> Home </a> </li><li> <a href="/play-union/visit/"> Visit </a> </li><li> <a href="/play-union/passes/"> Passes </a> </li><li> <a href="/play-union/classes-events/"> Events &amp; Classes </a> </li><li> <a href="/play-union/private-events/birthday-parties/" aria-current="page"> Parties </a> </li><li> <a href="/play-union/contact/"> Contact </a> </li> </ul> </nav> <div class="header-actions"> <button type="button" class="header-cart" id="cart-fab" aria-label="Cart" aria-haspopup="dialog" aria-controls="cart-drawer" aria-expanded="false"> <svg class="pu-icon " aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"
+>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M4 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M15 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M17 17h-11v-14h-2" />
+  <path d="M6 5l14 1l-1 7h-13" />
+</svg> <span class="cart-count" id="cart-count" aria-live="polite">0</span> </button> <a class="btn btn-primary header-cta" href="/play-union/visit/">Plan Your Visit</a> </div> </div> </div> </header> <script type="module">const e=document.getElementById("nav-toggle"),n=document.getElementById("site-nav");e?.addEventListener("click",()=>{const t=n?.classList.toggle("open");e.setAttribute("aria-expanded",t?"true":"false")});</script> <main id="main">  <section class="section"> <div class="wrap section-head"> <h1>Private Events</h1> <p class="lede">
+Play Union offers private bookings for children’s birthday parties in Somerville, plus
+        inquiry paths for other rentals and community collaborations.
+</p> </div> <div class="wrap card-grid"> <article class="action-card"> <div class="accent accent-pink"></div> <h2>Kids’ Birthday Parties</h2> <p>Exclusive use of the space, published pricing, add-ons, and party guidelines.</p> <a class="btn btn-primary" href="/play-union/private-events/birthday-parties/">Ask About a Party</a> </article> <article class="action-card"> <div class="accent accent-green"></div> <h2>Other Private Rentals</h2> <p>Space rental details beyond birthday parties — inquire for current availability.</p> <a class="btn btn-secondary" href="/play-union/private-events/other-rentals/">Inquire about a rental</a> </article> <article class="action-card"> <div class="accent accent-blue"></div> <h2>Partnerships & Collaborations</h2> <p>Separate path for instructors, organizations, and community partners.</p> <a class="btn btn-blue" href="/play-union/private-events/partnerships/">Partnership inquiry</a> </article> </div> </section>  </main> <footer class="site-footer"> <div class="wrap footer-grid"> <div> <h2 style="color:white;font-size:1.35rem;">Play Union</h2> <p>Play • Learn • Grow</p> <p> 378 Somerville Ave<br> Somerville, MA 02143 </p> <p> <a href="tel:617-764-3570">617-764-3570</a><br> <a href="mailto:info@playunionsomerville.com">info@playunionsomerville.com</a> </p> </div> <div> <h3 style="color:white;">Explore</h3> <p><a href="/play-union/visit/">Visit</a></p> <p><a href="/play-union/passes/">Passes</a></p> <p><a href="/play-union/classes-events/">Events</a></p> <p><a href="/play-union/private-events/birthday-parties/">Parties</a></p> <p><a href="/play-union/contact/">Contact</a></p> </div> <div> <h3 style="color:white;">More info</h3> <p> <a href="/play-union/about/">About</a> </p><p> <a href="/play-union/faq/">FAQ</a> </p><p> <a href="/play-union/visit/#hours">Hours</a> </p><p> <a href="/play-union/private-events/other-rentals/">Other private rentals</a> </p><p> <a href="/play-union/private-events/partnerships/">Partnerships</a> </p> <p> <a href="https://www.instagram.com/playunion/" rel="noopener noreferrer" target="_blank">Instagram</a> </p> </div> </div> <div class="wrap footer-bottom"> <p>© 2026 Play Union</p> </div> </footer> </body></html>
